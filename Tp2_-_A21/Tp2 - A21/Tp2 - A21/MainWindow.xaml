@@ -5,14 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Tp2___A21"
         mc:Ignorable="d"
-        Title="MainWindow" Height="533" Width="988">
-    <Grid Name="maGrid" Margin="0,0,0,9">
-        <Canvas Name="cnvTapis" HorizontalAlignment="Center" Height="488" VerticalAlignment="Center" Width="968" Background="#FF0A7C1F"/>
-        <Canvas Name="cnvDefausse" HorizontalAlignment="Left" Height="96" Margin="274,230,0,0" VerticalAlignment="Top" Width="72" ToolTip="Jouer la carte sélectionné" MouseUp="cnvDefausse_MouseUp"/>
-        <Canvas Name="cnvPaquet" HorizontalAlignment="Left" Height="96" Margin="370,230,0,0" VerticalAlignment="Top" Width="72" ToolTip="Piger une carte" MouseUp="cnvPaquet_MouseUp"/>
-        <Canvas Name="cnvJoueur1" HorizontalAlignment="Left" Height="104" Margin="25,20,0,0" VerticalAlignment="Top" Width="300" MouseUp="cnvJoueur1_MouseUp"/>
-        <Canvas Name="cnvJoueur2" HorizontalAlignment="Left" Height="96" Margin="665,28,0,0" VerticalAlignment="Top" Width="300"/>
-        <Canvas Name="cnvJoueur3" HorizontalAlignment="Left" Height="96" Margin="665,370,0,0" VerticalAlignment="Top" Width="300"/>
-        <Canvas Name="cnvJoueur4" HorizontalAlignment="Left" Height="96" Margin="25,370,0,0" VerticalAlignment="Top" Width="300"/>
+        Title="MainWindow" Height="533" Width="1302" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Background="#FF858585">
+    <Grid Name="maGrid">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FF536BEB" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Canvas Name="cnvTapis" HorizontalAlignment="Left" Height="526" VerticalAlignment="Center" Width="978" Margin="324,0,0,0" Background="#FF0A7C1F"/>
+        <Canvas Name="cnvDefausse" HorizontalAlignment="Left" Height="96" Margin="710,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Jouer la carte sélectionné" MouseUp="cnvDefausse_MouseUp"/>
+        <Canvas Name="cnvPaquet" HorizontalAlignment="Left" Height="96" Margin="808,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Piger une carte" MouseUp="cnvPaquet_MouseUp"/>
+        <Canvas Name="cnvJoueur1" HorizontalAlignment="Left" Height="104" Margin="351,28,0,0" VerticalAlignment="Top" Width="300" MouseUp="cnvJoueur1_MouseUp"/>
+        <Canvas Name="cnvJoueur2" HorizontalAlignment="Left" Height="96" Margin="964,28,0,0" VerticalAlignment="Top" Width="300"/>
+        <Canvas Name="cnvJoueur3" HorizontalAlignment="Left" Height="96" Margin="964,370,0,0" VerticalAlignment="Top" Width="300"/>
+        <Canvas Name="cnvJoueur4" HorizontalAlignment="Left" Height="96" Margin="351,370,0,0" VerticalAlignment="Top" Width="300"/>
+        <Label Content="Uno" HorizontalAlignment="Left" Margin="97,-4,0,0" VerticalAlignment="Top" FontFamily="Malgun Gothic" FontSize="60" FontWeight="UltraBold" FontStyle="Normal" Foreground="White"/>
+        <Label Content="Identifiant" HorizontalAlignment="Left" Margin="18,120,0,0" VerticalAlignment="Top" Width="230" Foreground="White" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Normal"/>
+        <TextBox x:Name="txtIdentifiant" HorizontalAlignment="Left" Margin="18,156,0,0" Text="" TextWrapping="NoWrap" VerticalAlignment="Top" Width="286" Height="36" FontFamily="Lucida Console" FontSize="18" TextAlignment="Justify" Foreground="White" Background="#FF090B2F" SelectionTextBrush="#FF0B6BC5" SelectionBrush="#FF0B6BC5" Padding="9,9,0,0" BorderThickness="0,0,0,0"/>
+        <Label Content="Mot de passe" HorizontalAlignment="Left" Margin="18,209,0,0" VerticalAlignment="Top" Width="230" Foreground="White" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Normal"/>
+        <PasswordBox x:Name="txtPassword" HorizontalAlignment="Left" Margin="18,245,0,0" VerticalAlignment="Top" Width="286" Height="36" Foreground="White" Background="#FF090B2F" SelectionTextBrush="#FF0078D7" Padding="9,9,0,0" FontFamily="Lucida Console" FontSize="18" BorderThickness="0,0,0,0"/>
+        <Button x:Name="btnConnexion" Content="Connexion" HorizontalAlignment="Left" Margin="166,297,0,0" VerticalAlignment="Top" Width="138" Height="42" Foreground="White" BorderBrush="#FF0095B9" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" Background="#FF060B5D" FontStyle="Normal" FontStretch="Normal" MouseEnter="btnConnexion_MouseEnter" MouseLeave="btnConnexion_MouseLeave" Padding="1,1,1,5" Cursor="Hand"/>
+        <Button x:Name="btnInscription" Content="Inscription" HorizontalAlignment="Left" Margin="18,297,0,0" VerticalAlignment="Top" Width="138" Height="42" Foreground="White" BorderBrush="#FF0095B9" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" Background="#FF060B5D" FontStyle="Normal" FontStretch="Normal" MouseEnter="btnInscription_MouseEnter" MouseLeave="btnInscription_MouseLeave" Padding="1,1,1,5" Cursor="Hand"/>
     </Grid>
 </Window>

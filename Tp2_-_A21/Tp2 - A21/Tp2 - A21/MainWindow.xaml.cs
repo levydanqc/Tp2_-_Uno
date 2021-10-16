@@ -139,5 +139,30 @@ namespace Tp2___A21
                 FaireUnTour();
             }
         }
+
+        #region Style visuel
+
+        private void btnInscription_MouseEnter(object sender, MouseEventArgs e)
+        {
+            btnInscription.Foreground = Brushes.Black;
+        }
+
+        private void btnInscription_MouseLeave(object sender, MouseEventArgs e)
+        {
+            btnInscription.Foreground = Brushes.White;
+        }
+
+        private void btnConnexion_MouseEnter(object sender, MouseEventArgs e)
+        {
+            btnConnexion.Foreground = Brushes.Black;
+        }
+
+        private void btnConnexion_MouseLeave(object sender, MouseEventArgs e)
+        {
+            btnConnexion.Foreground = Brushes.White;
+        }
+
+        #endregion
+
     }
 }
