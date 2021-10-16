@@ -26,6 +26,7 @@ namespace Tp2___A21
         private MoteurDeJeu _leJeu;
         private int _carteSelectionnee = -1;
         private bool _estConnecte = false;
+        private int _nbJoueurs;
 
         #endregion
 
@@ -37,13 +38,18 @@ namespace Tp2___A21
             set { _estConnecte = value; }
         }
 
+        public int NbJoueurs
+        {
+            get { return _nbJoueurs; }
+            set { _nbJoueurs = value; }
+        }
+
         #endregion
 
         public MainWindow()
         {
             InitializeComponent();
-            _leJeu = new MoteurDeJeu();
-            //Dessiner();
+            //_leJeu = new MoteurDeJeu();
             DessinerObjetsNecessitentConnexion(EstConnecte);
         }
 
@@ -51,6 +57,17 @@ namespace Tp2___A21
         {
             DessinerPaquetEtDefausse();
             DessinerJoueurs();
+            for (int i = 0; i < NbJoueurs; i++)
+            {
+                if (i == 0)
+                    lblJoueur.Visibility = Visibility.Visible;
+                else if (i == 1)
+                    lblBot1.Visibility = Visibility.Visible;
+                else if (i == 2)
+                    lblBot2.Visibility = Visibility.Visible;
+                else if (i == 3)
+                    lblBot3.Visibility = Visibility.Visible;
+            }
         }
 
         private void DessinerObjetsNecessitentConnexion(bool pEstConnecte)
@@ -61,10 +78,6 @@ namespace Tp2___A21
                 lblNbJoueurs.Visibility = Visibility.Visible;
                 txtNbJoueurs.Visibility = Visibility.Visible;
                 btnJouer.Visibility = Visibility.Visible;
-                lblJoueur.Visibility = Visibility.Visible;
-                lblBot1.Visibility = Visibility.Visible;
-                lblBot2.Visibility = Visibility.Visible;
-                lblBot3.Visibility = Visibility.Visible;
             }
             else
             {
@@ -126,7 +139,7 @@ namespace Tp2___A21
             int decalageSelection = -8;
             int decalageCarte = 0;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < NbJoueurs; i++)
             {
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
                 for (int j = 0; j < _leJeu.LesJoueurs[i].Main.Count; j++)
@@ -224,9 +237,53 @@ namespace Tp2___A21
 
         private void btnJouer_Click(object sender, RoutedEventArgs e)
         {
-            Dessiner();
-            lblJoueur.Content = txtIdentifiant.Text;
+            int tempo;
+            if (!int.TryParse(txtNbJoueurs.Text, out tempo))
+            {
+                txtNbJoueurs.Foreground = Brushes.Red;
+                MessageBox.Show("Veuillez entrer un nombre entier.");
+                txtNbJoueurs.Foreground = Brushes.White;
+                txtNbJoueurs.Clear();
+            }
+            else
+            {
+                NbJoueurs = Convert.ToInt32(txtNbJoueurs.Text);
+                if (NbJoueurs < 2 || NbJoueurs > 4)
+                {
+                    txtNbJoueurs.Foreground = Brushes.Red;
+                    MessageBox.Show("Le nombre de joueurs doit être 2, 3 ou 4.");
+                    txtNbJoueurs.Foreground = Brushes.White;
+                    txtNbJoueurs.Clear();
+                }
+                else
+                {
+                    _leJeu = new MoteurDeJeu(NbJoueurs, txtIdentifiant.Text);
+                    Effacer();
+                    Dessiner();
+                    lblJoueur.Content = txtIdentifiant.Text;
+                }
+            }
+            
         }
 
+        private void Effacer()
+        {
+            for (int i = 0; i < NbJoueurs; i++)
+            {
+                //((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
+                if (i == 1)
+                {
+                    cnvJoueur3.Children.Clear();
+                    lblBot2.Visibility = Visibility.Hidden;
+                    cnvJoueur4.Children.Clear();
+                    lblBot3.Visibility = Visibility.Hidden;
+                }
+                else if (i == 2)
+                {
+                    cnvJoueur4.Children.Clear();
+                    lblBot3.Visibility = Visibility.Hidden;
+                }
+            }
+        }
     }
 }

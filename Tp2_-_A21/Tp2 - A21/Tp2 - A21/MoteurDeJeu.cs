@@ -12,6 +12,7 @@ namespace Tp2___A21
         private List<Carte> _lePaquetCartes;
         private List<Carte> _defausse;
         private List<Joueur> _lesJoueurs;
+        private int _nbJoueurs;
 
         public List<Joueur> LesJoueurs
         {
@@ -19,17 +20,35 @@ namespace Tp2___A21
             set { _lesJoueurs = value; }
         }
 
+        public int NbJoueurs
+        {
+            get { return _nbJoueurs; }
+            set { _nbJoueurs = value; }
+        }
+
         /// <summary>
         /// Constructeur de la classe. La liste de joueurs est initialisée.
         /// Puis, le paquet de cartes est créé et distribué.
         /// </summary>
-        public MoteurDeJeu()
+        public MoteurDeJeu(int pNbJoueurs, string pNom)
         {
+            NbJoueurs = pNbJoueurs;
             LesJoueurs = new List<Joueur>();
-            LesJoueurs.Add(new Joueur("Bob"));
-            LesJoueurs.Add(new JoueurAutomatise("Roboto"));
-            LesJoueurs.Add(new JoueurAutomatise("Alexa"));
-            LesJoueurs.Add(new JoueurAutomatise("Hal"));
+            //LesJoueurs.Add(new Joueur("Bob"));
+            //LesJoueurs.Add(new JoueurAutomatise("Roboto"));
+            //LesJoueurs.Add(new JoueurAutomatise("Alexa"));
+            //LesJoueurs.Add(new JoueurAutomatise("Hal"));
+            for (int i = 0; i < NbJoueurs; i++)
+            {
+                if (i == 0)
+                    LesJoueurs.Add(new Joueur(pNom));
+                else if (i == 1)
+                    LesJoueurs.Add(new JoueurAutomatise("Roboto"));
+                else if (i == 2)
+                    LesJoueurs.Add(new JoueurAutomatise("Alexa"));
+                else if (i == 3)
+                    LesJoueurs.Add(new JoueurAutomatise("Hal"));
+            }
             CreerJeuCartes();
             DistribuerCartes();
         }
@@ -73,7 +92,7 @@ namespace Tp2___A21
         /// </summary>
         public void FaireUnTour()
         {
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i < NbJoueurs; i++)
             {
                 _defausse.Add(((JoueurAutomatise) LesJoueurs[i]).JouerUnTour());
             }
