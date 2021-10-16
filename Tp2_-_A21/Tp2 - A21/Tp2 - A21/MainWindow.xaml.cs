@@ -21,20 +21,62 @@ namespace Tp2___A21
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Attributs
+
         private MoteurDeJeu _leJeu;
         private int _carteSelectionnee = -1;
+        private bool _estConnecte = false;
+
+        #endregion
+
+        #region Accesseurs
+
+        public bool EstConnecte
+        {
+            get { return _estConnecte; }
+            set { _estConnecte = value; }
+        }
+
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
             _leJeu = new MoteurDeJeu();
-            Dessiner();
+            //Dessiner();
+            DessinerObjetsNecessitentConnexion(EstConnecte);
         }
 
         private void Dessiner()
         {
             DessinerPaquetEtDefausse();
             DessinerJoueurs();
+        }
+
+        private void DessinerObjetsNecessitentConnexion(bool pEstConnecte)
+        {
+            if (pEstConnecte)
+            {
+                lbl24.Visibility = Visibility.Visible;
+                lblNbJoueurs.Visibility = Visibility.Visible;
+                txtNbJoueurs.Visibility = Visibility.Visible;
+                btnJouer.Visibility = Visibility.Visible;
+                lblJoueur.Visibility = Visibility.Visible;
+                lblBot1.Visibility = Visibility.Visible;
+                lblBot2.Visibility = Visibility.Visible;
+                lblBot3.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                lbl24.Visibility = Visibility.Hidden;
+                lblNbJoueurs.Visibility = Visibility.Hidden;
+                txtNbJoueurs.Visibility = Visibility.Hidden;
+                btnJouer.Visibility = Visibility.Hidden;
+                lblJoueur.Visibility = Visibility.Hidden;
+                lblBot1.Visibility = Visibility.Hidden;
+                lblBot2.Visibility = Visibility.Hidden;
+                lblBot3.Visibility = Visibility.Hidden;
+            }
         }
 
         private void DessinerPaquetEtDefausse()
@@ -162,7 +204,29 @@ namespace Tp2___A21
             btnConnexion.Foreground = Brushes.White;
         }
 
+        private void btnJouer_MouseEnter(object sender, MouseEventArgs e)
+        {
+            btnJouer.Foreground = Brushes.Black;
+        }
+
+        private void btnJouer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            btnJouer.Foreground = Brushes.White;
+        }
+
         #endregion
+
+        private void btnConnexion_Click(object sender, RoutedEventArgs e)
+        {
+            EstConnecte = true;
+            DessinerObjetsNecessitentConnexion(EstConnecte);
+        }
+
+        private void btnJouer_Click(object sender, RoutedEventArgs e)
+        {
+            Dessiner();
+            lblJoueur.Content = txtIdentifiant.Text;
+        }
 
     }
 }
