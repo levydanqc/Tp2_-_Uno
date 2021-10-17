@@ -15,9 +15,9 @@
         </Grid.Background>
         <Canvas Name="cnvTapis" HorizontalAlignment="Left" Height="526" VerticalAlignment="Center" Width="978" Margin="324,0,0,0" Background="#FF0A7C1F">
             <Label x:Name="lblJoueur" Content="Joueur" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="24" Canvas.Top="20"/>
-            <Label x:Name="lblBot1" Content="Bot 1" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="645" Canvas.Top="20"/>
-            <Label x:Name="lblBot2" Content="Bot 2" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="645" Canvas.Top="340"/>
-            <Label x:Name="lblBot3" Content="Bot 3" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="24" Canvas.Top="340"/>
+            <Label x:Name="lblBot1" Content="Roboto" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="645" Canvas.Top="20"/>
+            <Label x:Name="lblBot2" Content="Alexa" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="645" Canvas.Top="340"/>
+            <Label x:Name="lblBot3" Content="Hal" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="24" Canvas.Top="340"/>
         </Canvas>
         <Canvas Name="cnvDefausse" HorizontalAlignment="Left" Height="96" Margin="710,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Jouer la carte sélectionné" MouseUp="cnvDefausse_MouseUp"/>
         <Canvas Name="cnvPaquet" HorizontalAlignment="Left" Height="96" Margin="808,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Piger une carte" MouseUp="cnvPaquet_MouseUp"/>

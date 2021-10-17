@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tp2___A21
 {
     public class MoteurDeJeu
     {
-        //
-        private List<Carte> _lePaquetCartes;
-        private List<Carte> _defausse;
-        private List<Joueur> _lesJoueurs;
+        //private List<Carte> _lePaquetCartes;
+        //private List<Carte> _defausse;
+        //private List<Joueur> _lesJoueurs;
+
+        private Stack<Carte> _lePaquetCartes;
+        private Stack<Carte> _defausse;
+        private Queue<Joueur> _lesJoueurs;
+
         private int _nbJoueurs;
 
-        public List<Joueur> LesJoueurs
+        public Queue<Joueur> LesJoueurs
         {
             get { return _lesJoueurs; }
             set { _lesJoueurs = value; }
@@ -30,22 +35,22 @@ namespace Tp2___A21
         public MoteurDeJeu(int pNbJoueurs, string pNom)
         {
             NbJoueurs = pNbJoueurs;
-            LesJoueurs = new List<Joueur>();
+            LesJoueurs = new Queue<Joueur>();
             for (int i = 0; i < NbJoueurs; i++)
             {
                 switch (i)
                 {
                     case 1:
-                        LesJoueurs.Add(new JoueurAutomatise("Roboto"));
+                        LesJoueurs.Enqueue(new JoueurAutomatise("Roboto"));
                         break;
                     case 2:
-                        LesJoueurs.Add(new JoueurAutomatise("Alexa"));
+                        LesJoueurs.Enqueue(new JoueurAutomatise("Alexa"));
                         break;
                     case 3:
-                        LesJoueurs.Add(new JoueurAutomatise("Hal"));
+                        LesJoueurs.Enqueue(new JoueurAutomatise("Hal"));
                         break;
                     default:
-                        LesJoueurs.Add(new Joueur(pNom));
+                        LesJoueurs.Enqueue(new Joueur(pNom));
                         break;
                 }
 
@@ -59,20 +64,19 @@ namespace Tp2___A21
         /// </summary>
         private void CreerJeuCartes()
         {
-            _defausse = new List<Carte>();
-            _lePaquetCartes = new List<Carte>();
+            _defausse = new Stack<Carte>();
+            _lePaquetCartes = new Stack<Carte>();
             foreach (Carte.Sorte laSorte in Enum.GetValues(typeof(Carte.Sorte)))
             {
                 for (int i = 2; i < 15; i++)
                 {
-                    _lePaquetCartes.Add(new Carte(i, laSorte));
+                    _lePaquetCartes.Push(new Carte(i, laSorte));
                 }
             }
-
-            BrasserPaquet();
+            BrasserPaquet(_lePaquetCartes);
         }
 
-        private void BrasserPaquet()
+        private void BrasserPaquet(Stack<Carte> leStack)
         {
             // TODO
         }
@@ -86,15 +90,31 @@ namespace Tp2___A21
             {
                 foreach (Joueur joueur in LesJoueurs)
                 {
-                    joueur.Main.Add(_lePaquetCartes[0]);
-                    _lePaquetCartes.RemoveAt(0);
+                    joueur.Main.Add(_lePaquetCartes.Pop());
+                    //_lePaquetCartes.RemoveAt(0);
                 }
             }
 
-            _defausse.Add(_lePaquetCartes[0]);
-            _lePaquetCartes.RemoveAt(0);
+            _defausse.Push(_lePaquetCartes.Pop());
+            //_lePaquetCartes.RemoveAt(0);
+
+            //A experimenter:
+            foreach (Joueur joueur in LesJoueurs)
+            {
+                joueur.Main = OrdonnerCartes(joueur.Main);
+            }
         }
 
+        public List<Carte> OrdonnerCartes(List<Carte> cartes)
+        {
+            cartes.GroupBy(l => l.SorteCarte).OrderByDescending(g => g.Count()).SelectMany(g => g.OrderBy(c => c.Valeur));
+            //var sorted = cartes
+            //    .GroupBy(l => l.SorteCarte)
+            //    .OrderBy(g => g.Count())
+            //    .SelectMany(g => g.OrderBy(c => c.Valeur));
+            //return sorted as List<Carte>;
+            return cartes;
+        }
 
         /// <summary>
         /// Cette méthode fait jouer les joueurs automatisés.
@@ -105,24 +125,46 @@ namespace Tp2___A21
         /// </returns>
         public int FaireUnTour()
         {
-            for (int i = 1; i < NbJoueurs; i++)
+            //for (int i = 1; i < NbJoueurs; i++)
+            //{
+            //    Joueur leJoueur = LesJoueurs.Peek() as JoueurAutomatise;
+            //    Carte carte = (LesJoueurs.Peek() as JoueurAutomatise)?.JouerUnTour(ObtenirSommetDefausse());
+
+            //    if (carte is {Valeur: -1})
+            //    {
+            //        (LesJoueurs.Peek() as JoueurAutomatise)?.Main.Add(_lePaquetCartes.Pop());
+            //        //_lePaquetCartes.RemoveAt(0);
+            //    }
+            //    else
+            //    {
+            //        _defausse.Push(carte);
+            //    }
+
+            //    if (LesJoueurs.Peek().Main.Count == 0)
+            //    {
+            //        return i;
+            //    }
+            //}
+            int i = 0;
+            foreach (Joueur joueur in LesJoueurs)
             {
-                Carte carte = (LesJoueurs[i] as JoueurAutomatise)?.JouerUnTour(ObtenirSommetDefausse());
+                if (joueur is JoueurAutomatise)
+                {
+                    i++;
+                    Carte carte = (joueur as JoueurAutomatise).JouerUnTour(ObtenirSommetDefausse());
+                    if (carte is { Valeur: -1 })
+                    {
+                        joueur.Main.Add(_lePaquetCartes.Pop());
+                    }
+                    else
+                    {
+                        _defausse.Push(carte);
+                    }
 
-                if (carte is {Valeur: -1})
-                {
-                    (LesJoueurs[i] as JoueurAutomatise)?.Main.Add(_lePaquetCartes[0]);
-                    _lePaquetCartes.RemoveAt(0);
-                }
-                else
-                {
-                    _defausse.Add(carte);
+                    if (joueur.Main.Count == 0)
+                        return i;
                 }
 
-                if (LesJoueurs[i].Main.Count == 0)
-                {
-                    return i;
-                }
             }
 
             return -1;
@@ -134,10 +176,10 @@ namespace Tp2___A21
         /// <param name="pIndiceCarte"></param>
         public void JouerCarteHumain(int pIndiceCarte)
         {
-            if (pIndiceCarte < LesJoueurs[0].Main.Count && pIndiceCarte > -1)
+            if (pIndiceCarte < LesJoueurs.Peek().Main.Count && pIndiceCarte > -1)
             {
-                _defausse.Add(LesJoueurs[0].Main[pIndiceCarte]);
-                LesJoueurs[0].Main.RemoveAt(pIndiceCarte);
+                _defausse.Push(LesJoueurs.Peek().Main[pIndiceCarte]);
+                LesJoueurs.Peek().Main.RemoveAt(pIndiceCarte);
             }
         }
 
@@ -146,8 +188,8 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarteHumain()
         {
-            LesJoueurs[0].Main.Add(_lePaquetCartes[0]);
-            _lePaquetCartes.RemoveAt(0);
+            LesJoueurs.Peek().Main.Add(_lePaquetCartes.Pop());
+            //_lePaquetCartes.RemoveAt(0);
         }
 
         /// <summary>
@@ -157,7 +199,8 @@ namespace Tp2___A21
         /// <returns>La carte au sommet de la défausse</returns>
         public Carte ObtenirSommetDefausse()
         {
-            return _defausse[^1];
+            //return _defausse[^1];
+            return _defausse.Peek();
         }
 
         /// <summary>

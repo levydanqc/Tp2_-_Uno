@@ -142,6 +142,7 @@ namespace Tp2___A21
             if (_leJeu.DefausseVide() == false)
             {
                 Image defausse = new Image();
+                Carte maCarte = _leJeu.ObtenirSommetDefausse();
                 defausse.Source =
                     BitmapFrame.Create(new Uri(
                         "Cartes/" + _leJeu.ObtenirSommetDefausse().ObtenirNomFichier(), UriKind.Relative));
@@ -184,14 +185,15 @@ namespace Tp2___A21
 
             for (int i = 0; i < NbJoueurs; i++)
             {
+                Joueur monJoueurActuel = _leJeu.LesJoueurs.Dequeue();
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
-                for (int j = 0; j < _leJeu.LesJoueurs[i].Main.Count; j++)
+                for (int j = 0; j < monJoueurActuel.Main.Count; j++)
                 {
 
                     Image monImage = new Image
                     {
                         Source =
-                        BitmapFrame.Create(new Uri("Cartes/" + _leJeu.LesJoueurs[i].Main[j].ObtenirNomFichier(),
+                        BitmapFrame.Create(new Uri("Cartes/" + monJoueurActuel.Main[j].ObtenirNomFichier(),
                             UriKind.Relative)),
                         Width = 72,
                         Height = 96
@@ -207,14 +209,15 @@ namespace Tp2___A21
                 }
 
                 decalageCarte = 0;
+                _leJeu.LesJoueurs.Enqueue(monJoueurActuel);
             }
         }
 
         private void cnvJoueur1_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
             Point leClick = pE.GetPosition(cnvJoueur1);
-            _carteSelectionnee = leClick.X < (82 + 14 * _leJeu.LesJoueurs[0].Main.Count()) && leClick.Y > 8
-                ? Math.Min(((int) leClick.X) / 14, _leJeu.LesJoueurs[0].Main.Count - 1)
+            _carteSelectionnee = leClick.X < (82 + 14 * _leJeu.LesJoueurs.Peek().Main.Count()) && leClick.Y > 8
+                ? Math.Min(((int) leClick.X) / 14, _leJeu.LesJoueurs.Peek().Main.Count - 1)
                 : -1;
             Dessiner();
         }
@@ -226,7 +229,16 @@ namespace Tp2___A21
 
             if (finParti > -1)
             {
-                MessageBox.Show("Le joueur: " + _leJeu.LesJoueurs[finParti].Nom + " a gangé la partie.", "Victoire.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                Joueur gagnant = new Joueur();
+                foreach (Joueur joueur in _leJeu.LesJoueurs)
+                {
+                    if (joueur.Main.Count == 0)
+                    {
+                        gagnant = joueur;
+                        break;
+                    }
+                }
+                MessageBox.Show("Le joueur: " + gagnant.Nom + " a gagné la partie.", "Victoire.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                 _leJeu = null;
             }
 
@@ -243,7 +255,7 @@ namespace Tp2___A21
         {
             if (_carteSelectionnee > -1)
             {
-                if (_leJeu.ObtenirSommetDefausse().Valeur != _leJeu.LesJoueurs[0].Main[_carteSelectionnee].Valeur && _leJeu.ObtenirSommetDefausse().SorteCarte != _leJeu.LesJoueurs[0].Main[_carteSelectionnee].SorteCarte)
+                if (_leJeu.ObtenirSommetDefausse().Valeur != _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee].Valeur && _leJeu.ObtenirSommetDefausse().SorteCarte != _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee].SorteCarte)
                 {
                         MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
@@ -297,7 +309,7 @@ namespace Tp2___A21
                 if (Utilitaires.VerifierMdp(txtPassword.Password, _dicoSalts[txtIdentifiant.Text],
                     _dicoJoueurs[txtIdentifiant.Text].Mdp))
                 {
-                    MessageBox.Show("Bienvenue " + _dicoJoueurs[txtIdentifiant.Text].Nom + "! Connexion est un succès.");
+                    MessageBox.Show("Bienvenu " + _dicoJoueurs[txtIdentifiant.Text].Nom + "! Vous êtes maintenant connecté.");
                     EstConnecte = true;
                     DessinerObjetsNecessitentConnexion(EstConnecte);
                 }
