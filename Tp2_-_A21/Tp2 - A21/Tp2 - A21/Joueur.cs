@@ -10,6 +10,7 @@ namespace Tp2___A21
     {
         private List<Carte> _main;
         private string _nom;
+        private byte[] _mdp;
 
         public string Nom
         {
@@ -23,10 +24,27 @@ namespace Tp2___A21
             set { _main = value; }
         }
 
+        public byte[] Mdp
+        {
+            get { return _mdp; }
+            set { _mdp = value; }
+        }
+
+        public Joueur(string pNom, byte[] pMdp)
+        {
+            Nom = pNom;
+            Mdp = pMdp;
+        }
+
         public Joueur(string pNom)
         {
             Main = new List<Carte>();
             Nom = pNom;
+        }
+
+        public Joueur()
+        {
+
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +29,8 @@ namespace Tp2___A21
         private int _carteSelectionnee = -1;
         private bool _estConnecte = false;
         private int _nbJoueurs;
+        private Dictionary<string, Joueur> _dicoJoueurs;
+        private Dictionary<string, byte[]> _dicoSalts;
 
         #endregion
 
@@ -49,8 +53,56 @@ namespace Tp2___A21
         public MainWindow()
         {
             InitializeComponent();
-            //_leJeu = new MoteurDeJeu();
+            ChargerUtilisateurs();
+            ChargerSalts();
             DessinerObjetsNecessitentConnexion(EstConnecte);
+        }
+
+        private void ChargerUtilisateurs()
+        {
+            if (File.Exists("users.save"))
+            {
+                using (StreamReader sr = new StreamReader("users.save"))
+                {
+                    _dicoJoueurs =
+                        (Dictionary<string, Joueur>)JsonSerializer.Deserialize(sr.ReadToEnd(),
+                            typeof(Dictionary<string, Joueur>));
+                }
+            }
+            else
+            {
+                _dicoJoueurs = new Dictionary<string, Joueur>();
+            }
+        }
+
+        private void ChargerSalts()
+        {
+            if (File.Exists("salts.save"))
+            {
+                using (StreamReader sr = new StreamReader("salts.save"))
+                {
+                    _dicoSalts =
+                        (Dictionary<string, byte[]>)JsonSerializer.Deserialize(sr.ReadToEnd(),
+                            typeof(Dictionary<string, byte[]>));
+                }
+            }
+            else
+            {
+                _dicoSalts = new Dictionary<string, byte[]>();
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            using (StreamWriter sw = new StreamWriter("users.save"))
+            {
+                sw.Write(JsonSerializer.Serialize(_dicoJoueurs, typeof(Dictionary<string, Joueur>)));
+            }
+
+            using (StreamWriter sw = new StreamWriter("salts.save"))
+            {
+                sw.Write(JsonSerializer.Serialize(_dicoSalts, typeof(Dictionary<string, byte[]>)));
+            }
         }
 
         private void Dessiner()
@@ -231,8 +283,24 @@ namespace Tp2___A21
 
         private void btnConnexion_Click(object sender, RoutedEventArgs e)
         {
-            EstConnecte = true;
-            DessinerObjetsNecessitentConnexion(EstConnecte);
+            if (_dicoJoueurs.ContainsKey(txtIdentifiant.Text))
+            {
+                if (Utilitaires.VerifierMdp(txtPassword.Password, _dicoSalts[txtIdentifiant.Text],
+                    _dicoJoueurs[txtIdentifiant.Text].Mdp))
+                {
+                    MessageBox.Show("Bienvenue " + _dicoJoueurs[txtIdentifiant.Text].Nom + "! Connexion est un succès.");
+                    EstConnecte = true;
+                    DessinerObjetsNecessitentConnexion(EstConnecte);
+                }
+                else
+                {
+                    MessageBox.Show("Mot de passe incorrect.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Identifiant non-existant.");
+            }
         }
 
         private void btnJouer_Click(object sender, RoutedEventArgs e)
@@ -283,6 +351,22 @@ namespace Tp2___A21
                     cnvJoueur4.Children.Clear();
                     lblBot3.Visibility = Visibility.Hidden;
                 }
+            }
+        }
+
+        private void btnInscription_Click(object sender, RoutedEventArgs e)
+        {
+            if (_dicoJoueurs.ContainsKey(txtIdentifiant.Text))
+            {
+                MessageBox.Show("Identifiant déjà existant.");
+            }
+            else
+            {
+                _dicoSalts.Add(txtIdentifiant.Text, Utilitaires.SaltMotDePasse());
+                Joueur user = new Joueur(txtIdentifiant.Text,
+                    Utilitaires.HashMotDePasse(txtPassword.Password, _dicoSalts[txtIdentifiant.Text]));
+                _dicoJoueurs.Add(txtIdentifiant.Text, user);
+                MessageBox.Show("Création d'un compte est un succès.");
             }
         }
     }
