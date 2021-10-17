@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tp2___A21
+﻿namespace Tp2___A21
 {
     public class Carte
     {
@@ -61,22 +54,16 @@ namespace Tp2___A21
             {
                 case < 11:
                     return Valeur.ToString();
-                    break;
                 case 11:
                     return "V";
-                    break;
                 case 12:
                     return "D";
-                    break;
                 case 13:
                     return "R";
-                    break;
                 case 14:
                     return "A";
-                    break;
                 default:
                     return "";
-                    break;
             }
         }
 
@@ -92,22 +79,19 @@ namespace Tp2___A21
             {
                 case Sorte.Carreau:
                     return "CA";
-                    break;
                 case Sorte.Coeur:
                     return "CO";
-                    break;
                 case Sorte.Pique:
                     return "PI";
-                    break;
                 case Sorte.Trèfle:
                     return "TR";
-                    break;
                 default:
                     return "";
-                    break;
             }
         }
 
         #endregion
+
+
     }
 }

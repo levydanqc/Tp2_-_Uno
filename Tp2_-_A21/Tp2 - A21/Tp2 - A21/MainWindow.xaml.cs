@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup.Localizer;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Tp2___A21
@@ -60,14 +55,11 @@ namespace Tp2___A21
 
         private void ChargerUtilisateurs()
         {
-            if (File.Exists("users.save"))
+            if (File.Exists("users.json"))
             {
-                using (StreamReader sr = new StreamReader("users.save"))
-                {
-                    _dicoJoueurs =
-                        (Dictionary<string, Joueur>)JsonSerializer.Deserialize(sr.ReadToEnd(),
-                            typeof(Dictionary<string, Joueur>));
-                }
+                _dicoJoueurs = (Dictionary<string, Joueur>)JsonSerializer.Deserialize(
+                    File.ReadAllText("users.json"), typeof(Dictionary<string, Joueur>));
+
             }
             else
             {
@@ -77,14 +69,10 @@ namespace Tp2___A21
 
         private void ChargerSalts()
         {
-            if (File.Exists("salts.save"))
+            if (File.Exists("salts.json"))
             {
-                using (StreamReader sr = new StreamReader("salts.save"))
-                {
-                    _dicoSalts =
-                        (Dictionary<string, byte[]>)JsonSerializer.Deserialize(sr.ReadToEnd(),
-                            typeof(Dictionary<string, byte[]>));
-                }
+                _dicoSalts = (Dictionary<string, byte[]>)JsonSerializer.Deserialize(
+                    File.ReadAllText("salts.json"), typeof(Dictionary<string, byte[]>));
             }
             else
             {
@@ -92,17 +80,13 @@ namespace Tp2___A21
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object pSender, System.ComponentModel.CancelEventArgs pE)
         {
-            using (StreamWriter sw = new StreamWriter("users.save"))
-            {
-                sw.Write(JsonSerializer.Serialize(_dicoJoueurs, typeof(Dictionary<string, Joueur>)));
-            }
+            JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+            File.WriteAllText("users.json", JsonSerializer.Serialize(_dicoJoueurs, typeof(Dictionary<string, Joueur>), options));
 
-            using (StreamWriter sw = new StreamWriter("salts.save"))
-            {
-                sw.Write(JsonSerializer.Serialize(_dicoSalts, typeof(Dictionary<string, byte[]>)));
-            }
+
+            File.WriteAllText("salts.json", JsonSerializer.Serialize(_dicoSalts, typeof(Dictionary<string, byte[]>), options));
         }
 
         private void Dessiner()
@@ -111,14 +95,21 @@ namespace Tp2___A21
             DessinerJoueurs();
             for (int i = 0; i < NbJoueurs; i++)
             {
-                if (i == 0)
-                    lblJoueur.Visibility = Visibility.Visible;
-                else if (i == 1)
-                    lblBot1.Visibility = Visibility.Visible;
-                else if (i == 2)
-                    lblBot2.Visibility = Visibility.Visible;
-                else if (i == 3)
-                    lblBot3.Visibility = Visibility.Visible;
+                switch (i)
+                {
+                    case 1:
+                        lblBot1.Visibility = Visibility.Visible;
+                        break;
+                    case 2:
+                        lblBot2.Visibility = Visibility.Visible;
+                        break;
+                    case 3:
+                        lblBot3.Visibility = Visibility.Visible;
+                        break;
+                    default:
+                        lblJoueur.Visibility = Visibility.Visible;
+                        break;
+                }
             }
         }
 
@@ -196,17 +187,22 @@ namespace Tp2___A21
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
                 for (int j = 0; j < _leJeu.LesJoueurs[i].Main.Count; j++)
                 {
-                    
-                    Image monImage = new Image();
-                    monImage.Source =
+
+                    Image monImage = new Image
+                    {
+                        Source =
                         BitmapFrame.Create(new Uri("Cartes/" + _leJeu.LesJoueurs[i].Main[j].ObtenirNomFichier(),
-                            UriKind.Relative));
-                    monImage.Width = 72;
-                    monImage.Height = 96;
+                            UriKind.Relative)),
+                        Width = 72,
+                        Height = 96
+                    };
                     if (i == 0 && j == _carteSelectionnee)
+                    {
                         Canvas.SetTop(monImage, decalageSelection);
+                    }
+
                     Canvas.SetLeft(monImage, decalageCarte);
-                    ((Canvas)maGrid.FindName("cnvJoueur"+(i+1).ToString())).Children.Add(monImage);
+                    ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Add(monImage);
                     decalageCarte += 14;
                 }
 
@@ -214,74 +210,87 @@ namespace Tp2___A21
             }
         }
 
-        private void cnvJoueur1_MouseUp(object sender, MouseButtonEventArgs e)
+        private void cnvJoueur1_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
-            Point leClick = e.GetPosition(cnvJoueur1);
-            if (leClick.X < (82 + 14 * _leJeu.LesJoueurs[0].Main.Count()) && leClick.Y > 8)
-                _carteSelectionnee = Math.Min(((int)leClick.X) / 14, _leJeu.LesJoueurs[0].Main.Count - 1);
-            else
-                _carteSelectionnee = -1;
+            Point leClick = pE.GetPosition(cnvJoueur1);
+            _carteSelectionnee = leClick.X < (82 + 14 * _leJeu.LesJoueurs[0].Main.Count()) && leClick.Y > 8
+                ? Math.Min(((int) leClick.X) / 14, _leJeu.LesJoueurs[0].Main.Count - 1)
+                : -1;
             Dessiner();
         }
 
         private void FaireUnTour()
         {
-            _leJeu.FaireUnTour();
+            int finParti = _leJeu.FaireUnTour();
             Dessiner();
+
+            if (finParti > -1)
+            {
+                MessageBox.Show("Le joueur: " + _leJeu.LesJoueurs[finParti].Nom + " a gangé la partie.", "Victoire.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                _leJeu = null;
+            }
+
         }
 
 
-        private void cnvPaquet_MouseUp(object sender, MouseButtonEventArgs e)
+        private void cnvPaquet_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
             _leJeu.PigerCarteHumain();
             FaireUnTour();
         }
 
-        private void cnvDefausse_MouseUp(object sender, MouseButtonEventArgs e)
+        private void cnvDefausse_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
             if (_carteSelectionnee > -1)
             {
-                _leJeu.JouerCarteHumain(_carteSelectionnee);
-                _carteSelectionnee = -1;
-                FaireUnTour();
+                if (_leJeu.ObtenirSommetDefausse().Valeur != _leJeu.LesJoueurs[0].Main[_carteSelectionnee].Valeur && _leJeu.ObtenirSommetDefausse().SorteCarte != _leJeu.LesJoueurs[0].Main[_carteSelectionnee].SorteCarte)
+                {
+                        MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else
+                {
+                    _leJeu.JouerCarteHumain(_carteSelectionnee);
+                    _carteSelectionnee = -1;
+                    FaireUnTour();
+                }
             }
         }
 
         #region Style visuel
 
-        private void btnInscription_MouseEnter(object sender, MouseEventArgs e)
+        private void btnInscription_MouseEnter(object pSender, MouseEventArgs pE)
         {
             btnInscription.Foreground = Brushes.Black;
         }
 
-        private void btnInscription_MouseLeave(object sender, MouseEventArgs e)
+        private void btnInscription_MouseLeave(object pSender, MouseEventArgs pE)
         {
             btnInscription.Foreground = Brushes.White;
         }
 
-        private void btnConnexion_MouseEnter(object sender, MouseEventArgs e)
+        private void btnConnexion_MouseEnter(object pSender, MouseEventArgs pE)
         {
             btnConnexion.Foreground = Brushes.Black;
         }
 
-        private void btnConnexion_MouseLeave(object sender, MouseEventArgs e)
+        private void btnConnexion_MouseLeave(object pSender, MouseEventArgs pE)
         {
             btnConnexion.Foreground = Brushes.White;
         }
 
-        private void btnJouer_MouseEnter(object sender, MouseEventArgs e)
+        private void btnJouer_MouseEnter(object pSender, MouseEventArgs pE)
         {
             btnJouer.Foreground = Brushes.Black;
         }
 
-        private void btnJouer_MouseLeave(object sender, MouseEventArgs e)
+        private void btnJouer_MouseLeave(object pSender, MouseEventArgs pE)
         {
             btnJouer.Foreground = Brushes.White;
         }
 
         #endregion
 
-        private void btnConnexion_Click(object sender, RoutedEventArgs e)
+        private void btnConnexion_Click(object pSender, RoutedEventArgs pE)
         {
             if (_dicoJoueurs.ContainsKey(txtIdentifiant.Text))
             {
@@ -293,20 +302,15 @@ namespace Tp2___A21
                     DessinerObjetsNecessitentConnexion(EstConnecte);
                 }
                 else
-                {
                     MessageBox.Show("Mot de passe incorrect.");
-                }
             }
             else
-            {
                 MessageBox.Show("Identifiant non-existant.");
-            }
         }
 
-        private void btnJouer_Click(object sender, RoutedEventArgs e)
+        private void btnJouer_Click(object pSender, RoutedEventArgs pE)
         {
-            int tempo;
-            if (!int.TryParse(txtNbJoueurs.Text, out tempo))
+            if (!int.TryParse(txtNbJoueurs.Text, out _))
             {
                 txtNbJoueurs.Foreground = Brushes.Red;
                 MessageBox.Show("Veuillez entrer un nombre entier.");
@@ -338,23 +342,23 @@ namespace Tp2___A21
         {
             for (int i = 0; i < NbJoueurs; i++)
             {
-                //((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
-                if (i == 1)
+                switch (i)
                 {
-                    cnvJoueur3.Children.Clear();
-                    lblBot2.Visibility = Visibility.Hidden;
-                    cnvJoueur4.Children.Clear();
-                    lblBot3.Visibility = Visibility.Hidden;
-                }
-                else if (i == 2)
-                {
-                    cnvJoueur4.Children.Clear();
-                    lblBot3.Visibility = Visibility.Hidden;
+                    case 1:
+                        cnvJoueur3.Children.Clear();
+                        lblBot2.Visibility = Visibility.Hidden;
+                        cnvJoueur4.Children.Clear();
+                        lblBot3.Visibility = Visibility.Hidden;
+                        break;
+                    case 2:
+                        cnvJoueur4.Children.Clear();
+                        lblBot3.Visibility = Visibility.Hidden;
+                        break;
                 }
             }
         }
 
-        private void btnInscription_Click(object sender, RoutedEventArgs e)
+        private void btnInscription_Click(object pSender, RoutedEventArgs pE)
         {
             if (_dicoJoueurs.ContainsKey(txtIdentifiant.Text))
             {
@@ -367,6 +371,7 @@ namespace Tp2___A21
                     Utilitaires.HashMotDePasse(txtPassword.Password, _dicoSalts[txtIdentifiant.Text]));
                 _dicoJoueurs.Add(txtIdentifiant.Text, user);
                 MessageBox.Show("Création d'un compte est un succès.");
+                btnConnexion_Click(pSender, pE);
             }
         }
     }

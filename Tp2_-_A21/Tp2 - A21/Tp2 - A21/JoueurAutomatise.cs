@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Tp2___A21
 {
@@ -15,12 +11,21 @@ namespace Tp2___A21
         /// <summary>
         /// Cette méthode permet aux joueurs automatisé de jouer un tour
         /// </summary>
-        /// <returns>La carte que le joueur veut jouer</returns>
-        public Carte JouerUnTour()
+        /// <returns>
+        /// -1 si le bot pige une carte.
+        /// La carte que le joueur veut jouer
+        /// </returns>
+        public Carte JouerUnTour(Carte pSommet)
         {
-            Carte carteRetour = Main[0];
-            Main.RemoveAt(0);
-            return carteRetour;
+            foreach (Carte carte in Utilitaires.Aleatoire.Next(100) > 50 ? Main : Enumerable.Reverse(Main).ToList())
+            {
+                if (pSommet.Valeur == carte.Valeur || pSommet.SorteCarte == carte.SorteCarte)
+                {
+                    Main.Remove(carte);
+                    return carte;
+                }
+            }
+            return new Carte(-1, Carte.Sorte.Carreau);
         }
     }
 }

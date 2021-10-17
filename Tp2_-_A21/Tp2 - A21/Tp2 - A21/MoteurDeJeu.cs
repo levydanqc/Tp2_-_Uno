@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tp2___A21
 {
@@ -34,20 +30,24 @@ namespace Tp2___A21
         {
             NbJoueurs = pNbJoueurs;
             LesJoueurs = new List<Joueur>();
-            //LesJoueurs.Add(new Joueur("Bob"));
-            //LesJoueurs.Add(new JoueurAutomatise("Roboto"));
-            //LesJoueurs.Add(new JoueurAutomatise("Alexa"));
-            //LesJoueurs.Add(new JoueurAutomatise("Hal"));
             for (int i = 0; i < NbJoueurs; i++)
             {
-                if (i == 0)
-                    LesJoueurs.Add(new Joueur(pNom));
-                else if (i == 1)
-                    LesJoueurs.Add(new JoueurAutomatise("Roboto"));
-                else if (i == 2)
-                    LesJoueurs.Add(new JoueurAutomatise("Alexa"));
-                else if (i == 3)
-                    LesJoueurs.Add(new JoueurAutomatise("Hal"));
+                switch (i)
+                {
+                    case 1:
+                        LesJoueurs.Add(new JoueurAutomatise("Roboto"));
+                        break;
+                    case 2:
+                        LesJoueurs.Add(new JoueurAutomatise("Alexa"));
+                        break;
+                    case 3:
+                        LesJoueurs.Add(new JoueurAutomatise("Hal"));
+                        break;
+                    default:
+                        LesJoueurs.Add(new Joueur(pNom));
+                        break;
+                }
+
             }
             CreerJeuCartes();
             DistribuerCartes();
@@ -67,6 +67,13 @@ namespace Tp2___A21
                     _lePaquetCartes.Add(new Carte(i, laSorte));
                 }
             }
+
+            BrasserPaquet();
+        }
+
+        private void BrasserPaquet()
+        {
+            // TODO
         }
 
         /// <summary>
@@ -74,28 +81,50 @@ namespace Tp2___A21
         /// </summary>
         private void DistribuerCartes()
         {
-            int j = 0;
             for (int i = 0; i < 8; i++)
             {
                 foreach (Joueur joueur in LesJoueurs)
                 {
-                    j = Utilitaires.aleatoire.Next(_lePaquetCartes.Count - 1);
-                    joueur.Main.Add(_lePaquetCartes[j]);
-                    _lePaquetCartes.RemoveAt(j);
+                    joueur.Main.Add(_lePaquetCartes[0]);
+                    _lePaquetCartes.RemoveAt(0);
                 }
             }
+
+            _defausse.Add(_lePaquetCartes[0]);
+            _lePaquetCartes.RemoveAt(0);
         }
 
 
         /// <summary>
         /// Cette méthode fait jouer les joueurs automatisés.
         /// </summary>
-        public void FaireUnTour()
+        /// <returns>
+        /// -1 si le jeu continue.
+        /// L'indice du joueur gagnant.
+        /// </returns>
+        public int FaireUnTour()
         {
             for (int i = 1; i < NbJoueurs; i++)
             {
-                _defausse.Add(((JoueurAutomatise) LesJoueurs[i]).JouerUnTour());
+                Carte carte = (LesJoueurs[i] as JoueurAutomatise)?.JouerUnTour(ObtenirSommetDefausse());
+
+                if (carte is {Valeur: -1})
+                {
+                    (LesJoueurs[i] as JoueurAutomatise)?.Main.Add(_lePaquetCartes[0]);
+                    _lePaquetCartes.RemoveAt(0);
+                }
+                else
+                {
+                    _defausse.Add(carte);
+                }
+
+                if (LesJoueurs[i].Main.Count == 0)
+                {
+                    return i;
+                }
             }
+
+            return -1;
         }
 
         /// <summary>

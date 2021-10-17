@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Konscious.Security.Cryptography;
 
 namespace Tp2___A21
 {
     public static class Utilitaires
     {
-        public static Random aleatoire = new Random();
+        public static Random Aleatoire = new Random();
 
         public static byte[] SaltMotDePasse()
         {
@@ -20,11 +18,11 @@ namespace Tp2___A21
             return buffer;
         }
 
-        public static byte[] HashMotDePasse(string password, byte[] salt)
+        public static byte[] HashMotDePasse(string pPassword, byte[] pSalt)
         {
-            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password))
+            var argon2 = new Argon2id(Encoding.UTF8.GetBytes(pPassword))
             {
-                Salt = salt,
+                Salt = pSalt,
                 DegreeOfParallelism = 8,
                 Iterations = 4,
                 MemorySize = 1024 * 1024
@@ -33,9 +31,9 @@ namespace Tp2___A21
             return argon2.GetBytes(16);
         }
 
-        public static bool VerifierMdp(string password, byte[] salt, byte[] hash)
+        public static bool VerifierMdp(string pPassword, byte[] pSalt, byte[] pHash)
         {
-            return hash.SequenceEqual(HashMotDePasse(password, salt));
+            return pHash.SequenceEqual(HashMotDePasse(pPassword, pSalt));
         }
     }
 }
