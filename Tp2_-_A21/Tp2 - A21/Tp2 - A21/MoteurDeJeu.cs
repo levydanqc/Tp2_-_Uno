@@ -5,6 +5,7 @@ namespace Tp2___A21
 {
     public class MoteurDeJeu
     {
+        //
         private List<Carte> _lePaquetCartes;
         private List<Carte> _defausse;
         private List<Joueur> _lesJoueurs;
