@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Tp2___A21
 {
@@ -73,12 +74,25 @@ namespace Tp2___A21
                     _lePaquetCartes.Push(new Carte(i, laSorte));
                 }
             }
-            BrasserPaquet(_lePaquetCartes);
+            _lePaquetCartes = BrasserPaquet(_lePaquetCartes);
         }
 
-        private void BrasserPaquet(Stack<Carte> leStack)
+        private Stack<Carte> BrasserPaquet(Stack<Carte> leStack)
         {
-            // TODO
+            List<Carte> cartesBrassees = new List<Carte>();
+            foreach (Carte carte in leStack)
+            {
+                cartesBrassees.Add(carte);
+            }
+            Random rnd = new Random();
+            cartesBrassees = (List<Carte>)cartesBrassees.OrderBy(item => rnd.Next());
+            Stack<Carte> stackBrasse = new Stack<Carte>();
+            foreach (Carte carte in cartesBrassees)
+            {
+                stackBrasse.Push(carte);
+            }
+
+            return stackBrasse;
         }
 
         /// <summary>
