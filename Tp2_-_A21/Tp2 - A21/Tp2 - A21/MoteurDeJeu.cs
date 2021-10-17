@@ -80,13 +80,15 @@ namespace Tp2___A21
         private Stack<Carte> BrasserPaquet(Stack<Carte> leStack)
         {
             List<Carte> cartesBrassees = new List<Carte>();
+
             foreach (Carte carte in leStack)
             {
                 cartesBrassees.Add(carte);
             }
-            Random rnd = new Random();
-            cartesBrassees = (List<Carte>)cartesBrassees.OrderBy(item => rnd.Next());
+
+            cartesBrassees = cartesBrassees.OrderBy(x => Guid.NewGuid()).ToList();
             Stack<Carte> stackBrasse = new Stack<Carte>();
+
             foreach (Carte carte in cartesBrassees)
             {
                 stackBrasse.Push(carte);
@@ -105,12 +107,10 @@ namespace Tp2___A21
                 foreach (Joueur joueur in LesJoueurs)
                 {
                     joueur.Main.Add(_lePaquetCartes.Pop());
-                    //_lePaquetCartes.RemoveAt(0);
                 }
             }
 
             _defausse.Push(_lePaquetCartes.Pop());
-            //_lePaquetCartes.RemoveAt(0);
 
             //A experimenter:
             foreach (Joueur joueur in LesJoueurs)
@@ -121,12 +121,7 @@ namespace Tp2___A21
 
         public List<Carte> OrdonnerCartes(List<Carte> cartes)
         {
-            cartes.GroupBy(l => l.SorteCarte).OrderByDescending(g => g.Count()).SelectMany(g => g.OrderBy(c => c.Valeur));
-            //var sorted = cartes
-            //    .GroupBy(l => l.SorteCarte)
-            //    .OrderBy(g => g.Count())
-            //    .SelectMany(g => g.OrderBy(c => c.Valeur));
-            //return sorted as List<Carte>;
+            cartes.GroupBy(carte => carte.SorteCarte).OrderByDescending(g => g.Count()).SelectMany(g => g.OrderBy(c => c.Valeur));
             return cartes;
         }
 
@@ -139,26 +134,6 @@ namespace Tp2___A21
         /// </returns>
         public int FaireUnTour()
         {
-            //for (int i = 1; i < NbJoueurs; i++)
-            //{
-            //    Joueur leJoueur = LesJoueurs.Peek() as JoueurAutomatise;
-            //    Carte carte = (LesJoueurs.Peek() as JoueurAutomatise)?.JouerUnTour(ObtenirSommetDefausse());
-
-            //    if (carte is {Valeur: -1})
-            //    {
-            //        (LesJoueurs.Peek() as JoueurAutomatise)?.Main.Add(_lePaquetCartes.Pop());
-            //        //_lePaquetCartes.RemoveAt(0);
-            //    }
-            //    else
-            //    {
-            //        _defausse.Push(carte);
-            //    }
-
-            //    if (LesJoueurs.Peek().Main.Count == 0)
-            //    {
-            //        return i;
-            //    }
-            //}
             int i = 0;
             foreach (Joueur joueur in LesJoueurs)
             {
@@ -168,6 +143,18 @@ namespace Tp2___A21
                     Carte carte = (joueur as JoueurAutomatise).JouerUnTour(ObtenirSommetDefausse());
                     if (carte is { Valeur: -1 })
                     {
+                        if (PaquetVide())
+                        {
+                            Stack<Carte> defausseBrassee = new Stack<Carte>();
+                            Carte laCarteDessus = _defausse.Pop();
+                            for (int j = 0; j < _defausse.Count; j++)
+                            {
+                                defausseBrassee.Push(_defausse.Pop());
+                            }
+                            _defausse.Push(laCarteDessus);
+                            defausseBrassee = BrasserPaquet(defausseBrassee);
+                            _lePaquetCartes = defausseBrassee;
+                        }
                         joueur.Main.Add(_lePaquetCartes.Pop());
                     }
                     else
@@ -202,8 +189,19 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarteHumain()
         {
+            if (PaquetVide())
+            {
+                Stack<Carte> defausseBrassee = new Stack<Carte>();
+                Carte laCarteDessus = _defausse.Pop();
+                for (int j = 0; j < _defausse.Count; j++)
+                {
+                    defausseBrassee.Push(_defausse.Pop());
+                }
+                _defausse.Push(laCarteDessus);
+                defausseBrassee = BrasserPaquet(defausseBrassee);
+                _lePaquetCartes = defausseBrassee;
+            }
             LesJoueurs.Peek().Main.Add(_lePaquetCartes.Pop());
-            //_lePaquetCartes.RemoveAt(0);
         }
 
         /// <summary>
@@ -213,7 +211,6 @@ namespace Tp2___A21
         /// <returns>La carte au sommet de la défausse</returns>
         public Carte ObtenirSommetDefausse()
         {
-            //return _defausse[^1];
             return _defausse.Peek();
         }
 
