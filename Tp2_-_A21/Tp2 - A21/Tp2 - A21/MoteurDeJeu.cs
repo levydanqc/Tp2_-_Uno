@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Windows.Documents;
 
 namespace Tp2___A21
 {
     public class MoteurDeJeu
     {
-        //private List<Carte> _lePaquetCartes;
-        //private List<Carte> _defausse;
-        //private List<Joueur> _lesJoueurs;
 
         private Stack<Carte> _lePaquetCartes;
         private Stack<Carte> _defausse;
@@ -37,24 +34,16 @@ namespace Tp2___A21
         {
             NbJoueurs = pNbJoueurs;
             LesJoueurs = new Queue<Joueur>();
-            for (int i = 0; i < NbJoueurs; i++)
+            List<string> nomBots = new()
             {
-                switch (i)
-                {
-                    case 1:
-                        LesJoueurs.Enqueue(new JoueurAutomatise("Roboto"));
-                        break;
-                    case 2:
-                        LesJoueurs.Enqueue(new JoueurAutomatise("Alexa"));
-                        break;
-                    case 3:
-                        LesJoueurs.Enqueue(new JoueurAutomatise("Hal"));
-                        break;
-                    default:
-                        LesJoueurs.Enqueue(new Joueur(pNom));
-                        break;
-                }
-
+                "Robot",
+                "Alexa",
+                "Hal"
+            };
+            LesJoueurs.Enqueue(new Joueur(pNom));
+            for (int i = 0; i < NbJoueurs-1; i++)
+            {
+                LesJoueurs.Enqueue(new JoueurAutomatise(nomBots[i]));
             }
             CreerJeuCartes();
             DistribuerCartes();
@@ -77,11 +66,11 @@ namespace Tp2___A21
             _lePaquetCartes = BrasserPaquet(_lePaquetCartes);
         }
 
-        private Stack<Carte> BrasserPaquet(Stack<Carte> leStack)
+        private Stack<Carte> BrasserPaquet(Stack<Carte> pLeStack)
         {
             List<Carte> cartesBrassees = new List<Carte>();
 
-            foreach (Carte carte in leStack)
+            foreach (Carte carte in pLeStack)
             {
                 cartesBrassees.Add(carte);
             }
@@ -112,82 +101,66 @@ namespace Tp2___A21
 
             _defausse.Push(_lePaquetCartes.Pop());
 
-            //A experimenter:
+            //TODO: A experimenter:
             foreach (Joueur joueur in LesJoueurs)
             {
                 joueur.Main = OrdonnerCartes(joueur.Main);
             }
         }
 
-        public List<Carte> OrdonnerCartes(List<Carte> cartes)
+        public List<Carte> OrdonnerCartes(List<Carte> pCartes)
         {
-            cartes.GroupBy(carte => carte.SorteCarte).OrderByDescending(g => g.Count()).SelectMany(g => g.OrderBy(c => c.Valeur));
-            return cartes;
+            return pCartes
+                .GroupBy(pCarte => pCarte.SorteCarte)
+                .OrderBy(pCarte => pCarte.Key)
+                .SelectMany(pGroup => pGroup
+                    .OrderBy(pCarte => pCarte.Valeur))
+                .ToList();
         }
 
         /// <summary>
         /// Cette méthode fait jouer les joueurs automatisés.
         /// </summary>
         /// <returns>
-        /// -1 si le jeu continue.
+        /// -1 si le jeu continue.<br/>
         /// L'indice du joueur gagnant.
         /// </returns>
         public int FaireUnTour()
         {
-            int i = 0;
+            //while (LesJoueurs.Peek() != )
+            //{
+                
+            //}
             foreach (Joueur joueur in LesJoueurs)
             {
-                if (joueur is JoueurAutomatise)
+                if (joueur is JoueurAutomatise joueurAutomatise)
                 {
-                    i++;
-                    Carte carte = (joueur as JoueurAutomatise).JouerUnTour(ObtenirSommetDefausse());
-                    if (carte is { Valeur: -1 })
+                    GestionPaquetVide();
+
+                    Carte carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
+                    if (carte is {Valeur: -1, SorteCarte: Carte.Sorte.Carreau})
                     {
-                        if (PaquetVide())
-                        {
-                            Stack<Carte> defausseBrassee = new Stack<Carte>();
-                            Carte laCarteDessus = _defausse.Pop();
-                            for (int j = 0; j < _defausse.Count; j++)
-                            {
-                                defausseBrassee.Push(_defausse.Pop());
-                            }
-                            _defausse.Push(laCarteDessus);
-                            defausseBrassee = BrasserPaquet(defausseBrassee);
-                            _lePaquetCartes = defausseBrassee;
-                        }
-                        joueur.Main.Add(_lePaquetCartes.Pop());
+                        PigerCarte(joueur);
                     }
                     else
                     {
+                        //carte.ObtenirPouvoir(ref _lesJoueurs);
+                        //if (carte.Valeur == 10)
+                        //{
+                        //    LesJoueurs = (Queue<Joueur>)LesJoueurs.Reverse();
+                        //}
                         _defausse.Push(carte);
                     }
 
-                    if (joueur.Main.Count == 0)
-                        return i;
-                }
+                    if (joueurAutomatise.Main.Count == 0) return -1;
 
+                }
             }
 
             return -1;
         }
 
-        /// <summary>
-        /// Cette méthode joue la carte sélectionné par le joueur humain.
-        /// </summary>
-        /// <param name="pIndiceCarte"></param>
-        public void JouerCarteHumain(int pIndiceCarte)
-        {
-            if (pIndiceCarte < LesJoueurs.Peek().Main.Count && pIndiceCarte > -1)
-            {
-                _defausse.Push(LesJoueurs.Peek().Main[pIndiceCarte]);
-                LesJoueurs.Peek().Main.RemoveAt(pIndiceCarte);
-            }
-        }
-
-        /// <summary>
-        /// Cette méthode fait piger une carte au joueur humain.
-        /// </summary>
-        public void PigerCarteHumain()
+        private void GestionPaquetVide()
         {
             if (PaquetVide())
             {
@@ -198,10 +171,30 @@ namespace Tp2___A21
                     defausseBrassee.Push(_defausse.Pop());
                 }
                 _defausse.Push(laCarteDessus);
-                defausseBrassee = BrasserPaquet(defausseBrassee);
-                _lePaquetCartes = defausseBrassee;
+                _lePaquetCartes = BrasserPaquet(defausseBrassee);
             }
-            LesJoueurs.Peek().Main.Add(_lePaquetCartes.Pop());
+        }
+
+        /// <summary>
+        /// Cette méthode joue la carte sélectionné par le joueur humain.
+        /// </summary>
+        /// <param name="pCarte">La carte à jouer.</param>
+        public void JouerCarteHumain(Carte pCarte)
+        {
+            if (LesJoueurs.Peek().Main.Contains(pCarte))
+            {
+                _defausse.Push(pCarte);
+                LesJoueurs.Peek().Main.Remove(pCarte);
+            }
+        }
+
+        /// <summary>
+        /// Cette méthode fait piger une carte au joueur actuel.
+        /// </summary>
+        public void PigerCarte(Joueur pJoueur)
+        {
+            pJoueur.Main.Add(_lePaquetCartes.Pop());
+            pJoueur.Main = OrdonnerCartes(LesJoueurs.Peek().Main);
         }
 
         /// <summary>

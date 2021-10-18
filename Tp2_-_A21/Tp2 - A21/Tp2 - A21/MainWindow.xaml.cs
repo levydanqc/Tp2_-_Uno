@@ -247,7 +247,7 @@ namespace Tp2___A21
 
         private void cnvPaquet_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
-            _leJeu.PigerCarteHumain();
+            _leJeu.PigerCarte(_leJeu.LesJoueurs.Peek());
             FaireUnTour();
         }
 
@@ -255,13 +255,15 @@ namespace Tp2___A21
         {
             if (_carteSelectionnee > -1)
             {
-                if (_leJeu.ObtenirSommetDefausse().Valeur != _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee].Valeur && _leJeu.ObtenirSommetDefausse().SorteCarte != _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee].SorteCarte)
+                Carte carte = _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee];
+                if (!carte.JouerAnytime && _leJeu.ObtenirSommetDefausse().Valeur != carte.Valeur &&
+                    _leJeu.ObtenirSommetDefausse().SorteCarte != carte.SorteCarte)
                 {
                         MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
-                    _leJeu.JouerCarteHumain(_carteSelectionnee);
+                    _leJeu.JouerCarteHumain(carte);
                     _carteSelectionnee = -1;
                     FaireUnTour();
                 }

@@ -8,6 +8,14 @@ namespace Tp2___A21
         private string _nom;
         private byte[] _mdp;
 
+        private int _nbPige;
+
+        public int NbPige
+        {
+            get { return _nbPige; }
+            set { _nbPige = value; }
+        }
+
         public string Nom
         {
             get { return _nom; }
@@ -30,6 +38,7 @@ namespace Tp2___A21
         {
             Nom = pNom;
             Mdp = pMdp;
+            _nbPige = 1;
         }
 
         public Joueur(string pNom)

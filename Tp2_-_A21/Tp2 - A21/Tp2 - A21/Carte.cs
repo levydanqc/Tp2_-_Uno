@@ -1,4 +1,7 @@
-﻿namespace Tp2___A21
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Tp2___A21
 {
     public class Carte
     {
@@ -12,6 +15,13 @@
 
         private int _valeur;
         private Sorte _sorte;
+        private bool _jouerAnytime;
+
+        public bool JouerAnytime
+        {
+            get { return _jouerAnytime; }
+            set { _jouerAnytime = value; }
+        }
 
         public int Valeur
         {
@@ -29,6 +39,7 @@
         {
             Valeur = pValeur;
             SorteCarte = pSorte;
+            _jouerAnytime = pValeur == 8 ? true : false;
         }
 
         #region NomFichierPourAffichage
@@ -91,7 +102,21 @@
         }
 
         #endregion
+        
+        public void ObtenirPouvoir( ref Queue<Joueur> pLesJoueurs)
+        {
+            switch (Valeur)
+            {
+                case 2:
+                    pLesJoueurs.Peek().NbPige = SorteCarte == Sorte.Pique ? 4 : 2;
+                    break;
+                case 10:
+                    break;
+                case 11:
+                    pLesJoueurs.Enqueue(pLesJoueurs.Dequeue());
+                    break;
+            }
 
-
+        }
     }
 }
