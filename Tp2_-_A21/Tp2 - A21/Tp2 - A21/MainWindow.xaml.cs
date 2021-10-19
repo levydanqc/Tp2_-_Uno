@@ -281,6 +281,16 @@ namespace Tp2___A21
         {
             btnInscription.Foreground = Brushes.White;
         }
+        private void btnInscription_GotFocus(object sender, RoutedEventArgs e)
+        {
+            btnConnexion.Background = Brushes.White;
+            btnConnexion.Foreground = Brushes.Black;
+        }
+        private void btnInscription_LostFocus(object sender, RoutedEventArgs e)
+        {
+            btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
+            btnConnexion.Foreground = Brushes.White;
+        }
 
         private void btnConnexion_MouseEnter(object pSender, MouseEventArgs pE)
         {
@@ -290,6 +300,17 @@ namespace Tp2___A21
         private void btnConnexion_MouseLeave(object pSender, MouseEventArgs pE)
         {
             btnConnexion.Foreground = Brushes.White;
+        }
+        private void btnConnexion_GotFocus(object sender, RoutedEventArgs e)
+        {
+            btnConnexion.Background = Brushes.White;
+            btnConnexion.Foreground = Brushes.Black;
+        }
+        private void btnConnexion_LostFocus(object sender, RoutedEventArgs e)
+        {
+            btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
+            btnConnexion.Foreground = Brushes.White;
+
         }
 
         private void btnJouer_MouseEnter(object pSender, MouseEventArgs pE)
@@ -388,5 +409,6 @@ namespace Tp2___A21
                 btnConnexion_Click(pSender, pE);
             }
         }
+
     }
 }

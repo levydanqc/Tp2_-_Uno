@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 
 namespace Tp2___A21
 {
@@ -68,17 +67,12 @@ namespace Tp2___A21
 
         private Stack<Carte> BrasserPaquet(Stack<Carte> pLeStack)
         {
-            List<Carte> cartesBrassees = new List<Carte>();
+            List<Carte> cartes = pLeStack.ToList();
 
-            foreach (Carte carte in pLeStack)
-            {
-                cartesBrassees.Add(carte);
-            }
+            cartes = cartes.OrderBy(_ => Guid.NewGuid()).ToList();
+            Stack<Carte> stackBrasse = new();
 
-            cartesBrassees = cartesBrassees.OrderBy(x => Guid.NewGuid()).ToList();
-            Stack<Carte> stackBrasse = new Stack<Carte>();
-
-            foreach (Carte carte in cartesBrassees)
+            foreach (Carte carte in cartes)
             {
                 stackBrasse.Push(carte);
             }
@@ -127,28 +121,35 @@ namespace Tp2___A21
         /// </returns>
         public int FaireUnTour()
         {
-            //while (LesJoueurs.Peek() != )
+            //LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+            //while (LesJoueurs.Peek() is JoueurAutomatise joueurAutomatise)
             //{
-                
+            //    LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+
+            //    Carte carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
+
+            //    if (carte is { Valeur: -1, SorteCarte: Carte.Sorte.Carreau })
+            //    {
+            //        PigerCarte(joueurAutomatise);
+            //    }
+            //    else
+            //    {
+            //        _defausse.Push(carte);
+            //    }
+
             //}
             foreach (Joueur joueur in LesJoueurs)
             {
                 if (joueur is JoueurAutomatise joueurAutomatise)
                 {
-                    GestionPaquetVide();
 
                     Carte carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
-                    if (carte is {Valeur: -1, SorteCarte: Carte.Sorte.Carreau})
+                    if (carte is { Valeur: -1, SorteCarte: Carte.Sorte.Carreau })
                     {
                         PigerCarte(joueur);
                     }
                     else
                     {
-                        //carte.ObtenirPouvoir(ref _lesJoueurs);
-                        //if (carte.Valeur == 10)
-                        //{
-                        //    LesJoueurs = (Queue<Joueur>)LesJoueurs.Reverse();
-                        //}
                         _defausse.Push(carte);
                     }
 
@@ -164,14 +165,14 @@ namespace Tp2___A21
         {
             if (PaquetVide())
             {
-                Stack<Carte> defausseBrassee = new Stack<Carte>();
-                Carte laCarteDessus = _defausse.Pop();
+                Stack<Carte> paquet = new Stack<Carte>();
+                Carte sommet = _defausse.Pop();
                 for (int j = 0; j < _defausse.Count; j++)
                 {
-                    defausseBrassee.Push(_defausse.Pop());
+                    paquet.Push(_defausse.Pop());
                 }
-                _defausse.Push(laCarteDessus);
-                _lePaquetCartes = BrasserPaquet(defausseBrassee);
+                _defausse.Push(sommet);
+                _lePaquetCartes = BrasserPaquet(paquet);
             }
         }
 
@@ -194,7 +195,10 @@ namespace Tp2___A21
         public void PigerCarte(Joueur pJoueur)
         {
             pJoueur.Main.Add(_lePaquetCartes.Pop());
-            pJoueur.Main = OrdonnerCartes(LesJoueurs.Peek().Main);
+            pJoueur.Main = OrdonnerCartes(pJoueur.Main);
+
+            GestionPaquetVide();
+
         }
 
         /// <summary>
