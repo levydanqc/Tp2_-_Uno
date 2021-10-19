@@ -179,11 +179,12 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarte(Joueur pJoueur)
         {
-            pJoueur.Main.Add(_lePaquetCartes.Pop());
+            for (int i = 0; i < pJoueur.NbPige; i++)
+            {
+                pJoueur.Main.Add(_lePaquetCartes.Pop());
+            }
             pJoueur.Main = OrdonnerCartes(pJoueur.Main);
-
             GestionPaquetVide();
-
         }
 
         /// <summary>
