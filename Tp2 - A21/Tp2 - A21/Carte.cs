@@ -102,7 +102,7 @@ namespace Tp2___A21
         }
 
         #endregion
-        
+
         public void ObtenirPouvoir( ref Queue<Joueur> pLesJoueurs)
         {
             switch (Valeur)
@@ -112,7 +112,15 @@ namespace Tp2___A21
                     break;
                 case 10:
                     Stack<Joueur> stackTempo = new Stack<Joueur>();
+                    while (pLesJoueurs.Count > 0)
+                    {
+                        stackTempo.Push(pLesJoueurs.Dequeue());
+                    }
 
+                    while (stackTempo.Count > 0)
+                    {
+                        pLesJoueurs.Enqueue(stackTempo.Pop());
+                    }
                     break;
                 case 11:
                     pLesJoueurs.Enqueue(pLesJoueurs.Dequeue());
