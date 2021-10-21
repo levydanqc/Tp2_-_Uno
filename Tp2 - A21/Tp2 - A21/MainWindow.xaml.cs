@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -224,7 +226,6 @@ namespace Tp2___A21
 
         private void FaireUnTour()
         {
-            _leJeu.LesJoueurs.Enqueue(_leJeu.LesJoueurs.Dequeue());
 
             string gagnant = _leJeu.FaireUnTour();
 
@@ -265,7 +266,8 @@ namespace Tp2___A21
                 }
                 else
                 {
-                    _leJeu.JouerCarteHumain(carte);
+                    string finPartie = _leJeu.JouerCarteHumain(carte);
+                    // TODO Gerer le non-bot qui gagne
                     _carteSelectionnee = -1;
                     FaireUnTour();
                 }

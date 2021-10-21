@@ -38,13 +38,13 @@ namespace Tp2___A21
         {
             Nom = pNom;
             Mdp = pMdp;
-            _nbPige = 1;
         }
 
         public Joueur(string pNom)
         {
             Main = new List<Carte>();
             Nom = pNom;
+            _nbPige = 1;
         }
 
         public Joueur()

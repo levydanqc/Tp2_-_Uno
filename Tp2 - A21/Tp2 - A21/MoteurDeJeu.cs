@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tp2___A21
@@ -126,22 +127,25 @@ namespace Tp2___A21
             {
 
                 Carte carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
-                
-                if (carte is { Valeur: -1, SorteCarte: Carte.Sorte.Carreau })
+                Trace.WriteLine($"Carte joué: {carte.Valeur} de { carte.SorteCarte} par {joueurAutomatise.Nom}");
+
+                if (carte is {Valeur: -1, SorteCarte: Carte.Sorte.Carreau})
                 {
                     PigerCarte(joueurAutomatise);
                 }
                 else
                 {
-                    carte.ObtenirPouvoir(ref _lesJoueurs);
+                    if (joueurAutomatise.Main.Count == 0) return joueurAutomatise.Nom;
+                    
+                    LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+
                     _defausse.Push(carte);
+
+                    carte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
                 }
 
-                if (joueurAutomatise.Main.Count == 0) return joueurAutomatise.Nom;
-
-                LesJoueurs.Enqueue(LesJoueurs.Dequeue());
             }
-
+            Trace.WriteLine("Tour terminé.");
             return "";
         }
 
@@ -164,14 +168,21 @@ namespace Tp2___A21
         /// Cette méthode joue la carte sélectionné par le joueur humain.
         /// </summary>
         /// <param name="pCarte">La carte à jouer.</param>
-        public void JouerCarteHumain(Carte pCarte)
+        public string JouerCarteHumain(Carte pCarte)
         {
             if (LesJoueurs.Peek().Main.Contains(pCarte))
             {
                 _defausse.Push(pCarte);
                 LesJoueurs.Peek().Main.Remove(pCarte);
-                pCarte.ObtenirPouvoir(ref _lesJoueurs);
+                // Verifier si gagne
+                if (LesJoueurs.Peek().Main.Count == 0) return LesJoueurs.Peek().Nom;
+
+                LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+
+                pCarte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
             }
+            string stringRetour = "";
+            return stringRetour;
         }
 
         /// <summary>
@@ -179,12 +190,11 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarte(Joueur pJoueur)
         {
-            for (int i = 0; i < pJoueur.NbPige; i++)
-            {
-                pJoueur.Main.Add(_lePaquetCartes.Pop());
-            }
+            pJoueur.Main.Add(_lePaquetCartes.Pop());
             pJoueur.Main = OrdonnerCartes(pJoueur.Main);
             GestionPaquetVide();
+
+            LesJoueurs.Enqueue(LesJoueurs.Dequeue());
         }
 
         /// <summary>

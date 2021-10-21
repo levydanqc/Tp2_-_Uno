@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Tp2___A21
@@ -103,14 +105,20 @@ namespace Tp2___A21
 
         #endregion
 
-        public void ObtenirPouvoir( ref Queue<Joueur> pLesJoueurs)
+        public void ObtenirPouvoir( ref Queue<Joueur> pLesJoueurs, Stack<Carte> pCartes)
         {
             switch (Valeur)
             {
                 case 2:
-                    pLesJoueurs.Peek().NbPige = SorteCarte == Sorte.Pique ? 4 : 2;
+                    Trace.WriteLine("Pouvoir 2");
+                    for (int i = 0; i < (SorteCarte == Sorte.Pique ? 3 : 1); i++)
+                    {
+                        pLesJoueurs.Peek().Main.Add(pCartes.Pop());
+                    }
+                    
                     break;
                 case 10:
+                    Trace.WriteLine("Pouvoir 10");
                     Stack<Joueur> stackTempo = new Stack<Joueur>();
                     while (pLesJoueurs.Count > 0)
                     {
@@ -123,10 +131,10 @@ namespace Tp2___A21
                     }
                     break;
                 case 11:
+                    Trace.WriteLine("Pouvoir 11");
                     pLesJoueurs.Enqueue(pLesJoueurs.Dequeue());
                     break;
             }
-
         }
     }
 }
