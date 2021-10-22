@@ -191,7 +191,6 @@ namespace Tp2___A21
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
                 for (int j = 0; j < monJoueurActuel.Main.Count; j++)
                 {
-
                     Image monImage = new Image
                     {
                         Source =
@@ -204,16 +203,28 @@ namespace Tp2___A21
                     {
                         Canvas.SetTop(monImage, decalageSelection);
                     }
-
                     Canvas.SetLeft(monImage, decalageCarte);
                     ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Add(monImage);
                     decalageCarte += 14;
+                    
+
+                    CacherMain(monJoueurActuel, monImage);
                 }
 
                 decalageCarte = 0;
                 _leJeu.LesJoueurs.Enqueue(monJoueurActuel);
+
             }
         }
+
+        private void CacherMain(Joueur pJoueur, Image pImage)
+        {
+            if (pJoueur is JoueurAutomatise)
+            {
+                pImage.Source = BitmapFrame.Create(new Uri("Cartes/b1fv.png", UriKind.Relative));
+            }
+        }
+
 
         private void cnvJoueur1_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
@@ -287,13 +298,15 @@ namespace Tp2___A21
         }
         private void btnInscription_GotFocus(object sender, RoutedEventArgs e)
         {
-            btnConnexion.Background = Brushes.White;
-            btnConnexion.Foreground = Brushes.Black;
+            // btnConnexion.Background = Brushes.White;
+            // btnConnexion.Foreground = Brushes.Black;
+            btnInscription.BorderBrush = Brushes.White;
         }
         private void btnInscription_LostFocus(object sender, RoutedEventArgs e)
         {
-            btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
-            btnConnexion.Foreground = Brushes.White;
+            // btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
+            // btnConnexion.Foreground = Brushes.White;
+            btnInscription.BorderBrush = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF0095B9");
         }
 
         private void btnConnexion_MouseEnter(object pSender, MouseEventArgs pE)
@@ -307,14 +320,15 @@ namespace Tp2___A21
         }
         private void btnConnexion_GotFocus(object sender, RoutedEventArgs e)
         {
-            btnConnexion.Background = Brushes.White;
-            btnConnexion.Foreground = Brushes.Black;
+            // btnConnexion.Background = Brushes.White;
+            // btnConnexion.Foreground = Brushes.Black;
+            btnConnexion.BorderBrush = Brushes.White;
         }
         private void btnConnexion_LostFocus(object sender, RoutedEventArgs e)
         {
-            btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
-            btnConnexion.Foreground = Brushes.White;
-
+            // btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
+            // btnConnexion.Foreground = Brushes.White;
+            btnConnexion.BorderBrush = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF0095B9");
         }
 
         private void btnJouer_MouseEnter(object pSender, MouseEventArgs pE)
