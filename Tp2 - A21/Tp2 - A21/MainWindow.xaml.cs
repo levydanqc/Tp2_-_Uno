@@ -191,11 +191,14 @@ namespace Tp2___A21
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
                 for (int j = 0; j < monJoueurActuel.Main.Count; j++)
                 {
+                    List<Carte> lstTempo = new List<Carte>();
+                    lstTempo = monJoueurActuel.Main.ToList();
+                    Carte carteActuelle = lstTempo[j];
                     Image monImage = new Image
                     {
-                        Source =
-                        BitmapFrame.Create(new Uri("Cartes/" + monJoueurActuel.Main[j].ObtenirNomFichier(),
-                            UriKind.Relative)),
+                        Source = 
+                            BitmapFrame.Create(new Uri("Cartes/" + carteActuelle.ObtenirNomFichier(), 
+                                UriKind.Relative)),
                         Width = 72,
                         Height = 96
                     };
@@ -239,6 +242,16 @@ namespace Tp2___A21
         {
 
             string gagnant = _leJeu.FaireUnTour();
+            foreach (Joueur joueur in _leJeu.LesJoueurs)
+            {
+                if (joueur is not JoueurAutomatise)
+                {
+                    if (joueur.Main.Count == 0)
+                    {
+                        gagnant = joueur.Nom;
+                    }
+                }
+            }
 
             Dessiner();
 
@@ -269,11 +282,14 @@ namespace Tp2___A21
         {
             if (_carteSelectionnee > -1)
             {
-                Carte carte = _leJeu.LesJoueurs.Peek().Main[_carteSelectionnee];
+                List<Carte> lstTempo = new List<Carte>();
+                lstTempo = _leJeu.LesJoueurs.Peek().Main.ToList();
+                Carte carte = lstTempo[_carteSelectionnee];
                 if (!carte.JouerAnytime && _leJeu.ObtenirSommetDefausse().Valeur != carte.Valeur &&
                     _leJeu.ObtenirSommetDefausse().SorteCarte != carte.SorteCarte)
                 {
-                        MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // TODO: Afficher l'erreur autrement
+                    MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {

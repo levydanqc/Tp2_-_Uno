@@ -18,7 +18,7 @@ namespace Tp2___A21
         public Carte JouerUnTour(Carte pSommet)
         {
             Carte? hasEight = null;
-            foreach (Carte carte in Utilitaires.Aleatoire.Next(100) > 50 ? Main : Enumerable.Reverse(Main).ToList())
+            foreach (Carte carte in Utilitaires.Aleatoire.Next(100) > 50 ? Main : Main.Reverse())
             {
                 if (carte.Valeur == 8) hasEight = carte;
                 if (pSommet.Valeur != carte.Valeur && pSommet.SorteCarte != carte.SorteCarte) continue;

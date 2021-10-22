@@ -4,7 +4,7 @@ namespace Tp2___A21
 {
     public class Joueur
     {
-        private List<Carte> _main;
+        private LinkedList<Carte> _main;
         private string _nom;
         private byte[] _mdp;
 
@@ -22,7 +22,7 @@ namespace Tp2___A21
             set { _nom = value; }
         }
 
-        public List<Carte> Main
+        public LinkedList<Carte> Main
         {
             get { return _main; }
             set { _main = value; }
@@ -42,7 +42,7 @@ namespace Tp2___A21
 
         public Joueur(string pNom)
         {
-            Main = new List<Carte>();
+            Main = new LinkedList<Carte>();
             Nom = pNom;
             _nbPige = 1;
         }

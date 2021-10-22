@@ -113,7 +113,7 @@ namespace Tp2___A21
                     Trace.WriteLine("Pouvoir 2");
                     for (int i = 0; i <= (SorteCarte == Sorte.Pique ? 3 : 1); i++)
                     {
-                        pLesJoueurs.Peek().Main.Add(pCartes.Pop());
+                        pLesJoueurs.Peek().Main.AddLast(pCartes.Pop());
                     }
                     
                     break;

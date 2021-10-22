@@ -91,27 +91,39 @@ namespace Tp2___A21
             {
                 foreach (Joueur joueur in LesJoueurs)
                 {
-                    joueur.Main.Add(_lePaquetCartes.Pop());
+                    joueur.Main.AddLast(_lePaquetCartes.Pop());
                 }
             }
 
             _defausse.Push(_lePaquetCartes.Pop());
 
-            //TODO: A experimenter:
             foreach (Joueur joueur in LesJoueurs)
             {
                 joueur.Main = OrdonnerCartes(joueur.Main);
             }
         }
 
-        public List<Carte> OrdonnerCartes(List<Carte> pCartes)
+        public LinkedList<Carte> OrdonnerCartes(LinkedList<Carte> pCartes)
         {
-            return pCartes
-                .GroupBy(pCarte => pCarte.SorteCarte)
-                .OrderBy(pCarte => pCarte.Key)
-                .SelectMany(pGroup => pGroup
-                    .OrderBy(pCarte => pCarte.Valeur))
-                .ToList();
+            //return pCartes
+            //    .GroupBy(pCarte => pCarte.SorteCarte)
+            //    .OrderBy(pCarte => pCarte.Key)
+            //    .SelectMany(pGroup => pGroup
+            //        .OrderBy(pCarte => pCarte.Valeur))
+            //    .ToList();
+            LinkedList<Carte> lstTempo = new LinkedList<Carte>();
+            List<Carte> lstCartes = new List<Carte>();
+            lstCartes = pCartes.ToList();
+            lstCartes = lstCartes.GroupBy(pCarte => pCarte.SorteCarte).OrderBy(pCarte => pCarte.Key)
+                .SelectMany(pGroup => pGroup.OrderBy(pCarte => pCarte.Valeur)).ToList();
+            foreach (Carte carte in lstCartes)
+            {
+                lstTempo.AddLast(carte);
+            }
+
+            return lstTempo;
+            //return p.GroupBy(psad000000dssCarte => pCarte.SorteCarte).OrderBy(pCarte => pCarte.Key)
+            //    .SelectMany(pGroup => pGroup.OrderBy(pCarte => pCarte.Valeur)).ToList;
         }
 
         /// <summary>
@@ -190,7 +202,7 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarte(Joueur pJoueur)
         {
-            pJoueur.Main.Add(_lePaquetCartes.Pop());
+            pJoueur.Main.AddLast(_lePaquetCartes.Pop());
             pJoueur.Main = OrdonnerCartes(pJoueur.Main);
             GestionPaquetVide();
 
