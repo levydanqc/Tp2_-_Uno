@@ -298,14 +298,10 @@ namespace Tp2___A21
         }
         private void btnInscription_GotFocus(object sender, RoutedEventArgs e)
         {
-            // btnConnexion.Background = Brushes.White;
-            // btnConnexion.Foreground = Brushes.Black;
             btnInscription.BorderBrush = Brushes.White;
         }
         private void btnInscription_LostFocus(object sender, RoutedEventArgs e)
         {
-            // btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
-            // btnConnexion.Foreground = Brushes.White;
             btnInscription.BorderBrush = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF0095B9");
         }
 
@@ -320,14 +316,10 @@ namespace Tp2___A21
         }
         private void btnConnexion_GotFocus(object sender, RoutedEventArgs e)
         {
-            // btnConnexion.Background = Brushes.White;
-            // btnConnexion.Foreground = Brushes.Black;
             btnConnexion.BorderBrush = Brushes.White;
         }
         private void btnConnexion_LostFocus(object sender, RoutedEventArgs e)
         {
-            // btnConnexion.Background = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF060B5D");
-            // btnConnexion.Foreground = Brushes.White;
             btnConnexion.BorderBrush = (Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#FF0095B9");
         }
 

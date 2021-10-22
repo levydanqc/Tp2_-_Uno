@@ -105,13 +105,13 @@ namespace Tp2___A21
 
         #endregion
 
-        public void ObtenirPouvoir( ref Queue<Joueur> pLesJoueurs, Stack<Carte> pCartes)
+        public void ObtenirPouvoir(ref Queue<Joueur> pLesJoueurs, Stack<Carte> pCartes)
         {
             switch (Valeur)
             {
                 case 2:
                     Trace.WriteLine("Pouvoir 2");
-                    for (int i = 0; i < (SorteCarte == Sorte.Pique ? 3 : 1); i++)
+                    for (int i = 0; i <= (SorteCarte == Sorte.Pique ? 3 : 1); i++)
                     {
                         pLesJoueurs.Peek().Main.Add(pCartes.Pop());
                     }
