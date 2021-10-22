@@ -294,7 +294,6 @@ namespace Tp2___A21
                 else
                 {
                     string finPartie = _leJeu.JouerCarteHumain(carte);
-                    // TODO Gerer le non-bot qui gagne
                     _carteSelectionnee = -1;
                     FaireUnTour();
                 }
