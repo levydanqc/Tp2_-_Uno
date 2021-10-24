@@ -115,7 +115,6 @@ namespace Tp2___A21
                     {
                         pLesJoueurs.Peek().Main.AddLast(pCartes.Pop());
                     }
-                    
                     break;
                 case 10:
                     Trace.WriteLine("Pouvoir 10");

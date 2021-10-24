@@ -19,6 +19,12 @@
             <Label x:Name="lblBot2" Content="Alexa" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="645" Canvas.Top="340"/>
             <Label x:Name="lblBot3" Content="Hal" Width="230" Foreground="White" FontFamily="Bernard MT Condensed" FontSize="20" FontWeight="Bold" Canvas.Left="24" Canvas.Top="340"/>
         </Canvas>
+        <Canvas Name="cnvChoixSorteDu8" VerticalAlignment="Center" HorizontalAlignment="Left" Height="75" Margin="350,0,0,0" Width="315" ToolTip="Choisir une nouvelle sorte à continuer avec">
+            <Button Tag="choixJoueur" x:Name="btnChoixPique" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="0,0,0,0" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixPique_Click">Pique</Button>
+            <Button Tag="choixJoueur" x:Name="btnChoixTrefle" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="80,0,0,0" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixTrefle_Click">Trèfle</Button>
+            <Button Tag="choixJoueur" x:Name="btnChoixCoeur" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="160,0,0,0" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixCoeur_Click">Coeur</Button>
+            <Button Tag="choixJoueur" x:Name="btnChoixCarreau" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="240,0,0,0" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixCarreau_Click">Carreau</Button>
+        </Canvas>
         <Canvas Name="cnvDefausse" HorizontalAlignment="Left" Height="96" Margin="710,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Jouer la carte sélectionné" MouseUp="cnvDefausse_MouseUp"/>
         <Canvas Name="cnvPaquet" HorizontalAlignment="Left" Height="96" Margin="808,0,0,0" VerticalAlignment="Center" Width="72" ToolTip="Piger une carte" MouseUp="cnvPaquet_MouseUp"/>
         <Canvas Name="cnvJoueur1" HorizontalAlignment="Left" Height="104" Margin="351,48,0,0" VerticalAlignment="Top" Width="300" MouseUp="cnvJoueur1_MouseUp"/>

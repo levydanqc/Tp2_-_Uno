@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -53,6 +54,7 @@ namespace Tp2___A21
             ChargerUtilisateurs();
             ChargerSalts();
             DessinerObjetsNecessitentConnexion(EstConnecte);
+            DessinerObjetsChoixSorte(false);
         }
 
         private void ChargerUtilisateurs()
@@ -134,6 +136,24 @@ namespace Tp2___A21
                 lblBot1.Visibility = Visibility.Hidden;
                 lblBot2.Visibility = Visibility.Hidden;
                 lblBot3.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void DessinerObjetsChoixSorte(bool pChoisirSorte)
+        {
+            if (pChoisirSorte)
+            {
+                btnChoixPique.Visibility = Visibility.Visible;
+                btnChoixTrefle.Visibility = Visibility.Visible;
+                btnChoixCarreau.Visibility = Visibility.Visible;
+                btnChoixCoeur.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnChoixPique.Visibility = Visibility.Hidden;
+                btnChoixTrefle.Visibility = Visibility.Hidden;
+                btnChoixCarreau.Visibility = Visibility.Hidden;
+                btnChoixCoeur.Visibility = Visibility.Hidden;
             }
         }
 
@@ -294,6 +314,7 @@ namespace Tp2___A21
                 else
                 {
                     string finPartie = _leJeu.JouerCarteHumain(carte);
+                    DessinerObjetsChoixSorte(true);
                     _carteSelectionnee = -1;
                     FaireUnTour();
                 }
@@ -435,5 +456,32 @@ namespace Tp2___A21
             }
         }
 
+        private void btnChoixPique_Click(object sender, RoutedEventArgs e)
+        {
+            _leJeu.ChangerSorte(Carte.Sorte.Pique);
+            Trace.WriteLine("Sorte changer à Pique.");
+            DessinerObjetsChoixSorte(false);
+        }
+
+        private void btnChoixTrefle_Click(object sender, RoutedEventArgs e)
+        {
+            _leJeu.ChangerSorte(Carte.Sorte.Trèfle);
+            Trace.WriteLine("Sorte changer à Trèfle.");
+            DessinerObjetsChoixSorte(false);
+        }
+
+        private void btnChoixCoeur_Click(object sender, RoutedEventArgs e)
+        {
+            _leJeu.ChangerSorte(Carte.Sorte.Coeur);
+            Trace.WriteLine("Sorte changer à Coeur.");
+            DessinerObjetsChoixSorte(false);
+        }
+
+        private void btnChoixCarreau_Click(object sender, RoutedEventArgs e)
+        {
+            _leJeu.ChangerSorte(Carte.Sorte.Carreau);
+            Trace.WriteLine("Sorte changer à Carreau.");
+            DessinerObjetsChoixSorte(false);
+        }
     }
 }

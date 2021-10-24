@@ -155,7 +155,6 @@ namespace Tp2___A21
 
                     carte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
                 }
-
             }
             Trace.WriteLine("Tour terminé.");
             return "";
@@ -193,8 +192,7 @@ namespace Tp2___A21
 
                 pCarte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
             }
-            string stringRetour = "";
-            return stringRetour;
+            return "";
         }
 
         /// <summary>
@@ -207,6 +205,14 @@ namespace Tp2___A21
             GestionPaquetVide();
 
             LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+        }
+
+        /// <summary>
+        /// Cette méthode change la sorte de la dernière carte jouer.
+        /// </summary>
+        public void ChangerSorte(Carte.Sorte pSorte)
+        {
+            _defausse.Peek().SorteCarte = pSorte;
         }
 
         /// <summary>
