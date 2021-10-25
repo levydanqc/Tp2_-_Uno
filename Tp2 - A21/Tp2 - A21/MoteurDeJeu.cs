@@ -13,6 +13,8 @@ namespace Tp2___A21
         private Stack<Carte> _defausse;
         private Queue<Joueur> _lesJoueurs;
 
+        private Carte _cartePouvoir8 = new Carte(0, Carte.Sorte.Carreau);
+
         private int _nbJoueurs;
 
         public Queue<Joueur> LesJoueurs
@@ -25,6 +27,12 @@ namespace Tp2___A21
         {
             get { return _nbJoueurs; }
             set { _nbJoueurs = value; }
+        }
+
+        public Carte CartePouvoir8
+        {
+            get { return _cartePouvoir8; }
+            set { _cartePouvoir8 = value; }
         }
 
         /// <summary>
@@ -137,10 +145,18 @@ namespace Tp2___A21
         {
             while (LesJoueurs.Peek() is JoueurAutomatise joueurAutomatise)
             {
+                Carte carte;
+                if (CartePouvoir8.Valeur == 8)
+                {
+                    carte = joueurAutomatise.JouerUnTour(CartePouvoir8);
+                    CartePouvoir8.Valeur = 0;
+                }
+                else
+                {
+                    carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
+                }
 
-                Carte carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
                 Trace.WriteLine($"Carte joué: {carte.Valeur} de { carte.SorteCarte} par {joueurAutomatise.Nom}");
-
                 if (carte is {Valeur: -1, SorteCarte: Carte.Sorte.Carreau})
                 {
                     PigerCarte(joueurAutomatise);
@@ -148,12 +164,15 @@ namespace Tp2___A21
                 else
                 {
                     if (joueurAutomatise.Main.Count == 0) return joueurAutomatise.Nom;
-                    
                     LesJoueurs.Enqueue(LesJoueurs.Dequeue());
-
                     _defausse.Push(carte);
-
                     carte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
+
+                    if (carte.Valeur == 8)
+                    {
+                        CartePouvoir8.SorteCarte = joueurAutomatise.ObtenirSortePouvoir8();
+                        CartePouvoir8.Valeur = 8;
+                    }
                 }
             }
             Trace.WriteLine("Tour terminé.");
@@ -192,6 +211,7 @@ namespace Tp2___A21
 
                 pCarte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
             }
+            Trace.WriteLine($"Carte joué: {pCarte.Valeur} de { pCarte.SorteCarte} par Joueur");
             return "";
         }
 
@@ -205,14 +225,6 @@ namespace Tp2___A21
             GestionPaquetVide();
 
             LesJoueurs.Enqueue(LesJoueurs.Dequeue());
-        }
-
-        /// <summary>
-        /// Cette méthode change la sorte de la dernière carte jouer.
-        /// </summary>
-        public void ChangerSorte(Carte.Sorte pSorte)
-        {
-            _defausse.Peek().SorteCarte = pSorte;
         }
 
         /// <summary>

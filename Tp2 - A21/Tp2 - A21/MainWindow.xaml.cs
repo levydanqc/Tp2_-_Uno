@@ -97,6 +97,7 @@ namespace Tp2___A21
         {
             DessinerPaquetEtDefausse();
             DessinerJoueurs();
+            DessinerObjetsChoixSorte(_leJeu.CartePouvoir8.Valeur == 8);
             for (int i = 0; i < NbJoueurs; i++)
             {
                 switch (i)
@@ -231,7 +232,7 @@ namespace Tp2___A21
                     decalageCarte += 14;
                     
 
-                    CacherMain(monJoueurActuel, monImage);
+                    //CacherMain(monJoueurActuel, monImage);
                 }
 
                 decalageCarte = 0;
@@ -239,7 +240,7 @@ namespace Tp2___A21
 
             }
         }
-
+        /*
         private void CacherMain(Joueur pJoueur, Image pImage)
         {
             if (pJoueur is JoueurAutomatise)
@@ -247,7 +248,7 @@ namespace Tp2___A21
                 pImage.Source = BitmapFrame.Create(new Uri("Cartes/b1fv.png", UriKind.Relative));
             }
         }
-
+        */
 
         private void cnvJoueur1_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
@@ -260,8 +261,8 @@ namespace Tp2___A21
 
         private void FaireUnTour()
         {
-
             string gagnant = _leJeu.FaireUnTour();
+
             foreach (Joueur joueur in _leJeu.LesJoueurs)
             {
                 if (joueur is not JoueurAutomatise)
@@ -305,8 +306,19 @@ namespace Tp2___A21
                 List<Carte> lstTempo = new List<Carte>();
                 lstTempo = _leJeu.LesJoueurs.Peek().Main.ToList();
                 Carte carte = lstTempo[_carteSelectionnee];
-                if (!carte.JouerAnytime && _leJeu.ObtenirSommetDefausse().Valeur != carte.Valeur &&
-                    _leJeu.ObtenirSommetDefausse().SorteCarte != carte.SorteCarte)
+
+                Carte carteAJouer;
+                if (_leJeu.CartePouvoir8.Valeur != 8)
+                {
+                    carteAJouer = _leJeu.ObtenirSommetDefausse();
+                }
+                else
+                {
+                    carteAJouer = _leJeu.CartePouvoir8;
+                }
+
+                if (!carte.JouerAnytime && carteAJouer.Valeur != carte.Valeur &&
+                    carteAJouer.SorteCarte != carte.SorteCarte)
                 {
                     // TODO: Afficher l'erreur autrement
                     MessageBox.Show("La carte sélectionnée doit être de la même sorte ou valeur que le sommet de la défausse.", "Carte non valide.", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -314,8 +326,8 @@ namespace Tp2___A21
                 else
                 {
                     string finPartie = _leJeu.JouerCarteHumain(carte);
-                    DessinerObjetsChoixSorte(true);
                     _carteSelectionnee = -1;
+                    DessinerObjetsChoixSorte(true);
                     FaireUnTour();
                 }
             }
@@ -456,32 +468,37 @@ namespace Tp2___A21
             }
         }
 
+        public void ObtenirChoixSorteJoueur(Carte.Sorte pSorte)
+        {
+            _leJeu.CartePouvoir8 = new Carte(8, pSorte);
+        }
+
         private void btnChoixPique_Click(object sender, RoutedEventArgs e)
         {
-            _leJeu.ChangerSorte(Carte.Sorte.Pique);
+            ObtenirChoixSorteJoueur(Carte.Sorte.Pique);
             Trace.WriteLine("Sorte changer à Pique.");
-            DessinerObjetsChoixSorte(false);
+            Dessiner();
         }
 
         private void btnChoixTrefle_Click(object sender, RoutedEventArgs e)
         {
-            _leJeu.ChangerSorte(Carte.Sorte.Trèfle);
+            ObtenirChoixSorteJoueur(Carte.Sorte.Trèfle);
             Trace.WriteLine("Sorte changer à Trèfle.");
-            DessinerObjetsChoixSorte(false);
+            Dessiner();
         }
 
         private void btnChoixCoeur_Click(object sender, RoutedEventArgs e)
         {
-            _leJeu.ChangerSorte(Carte.Sorte.Coeur);
+            ObtenirChoixSorteJoueur(Carte.Sorte.Coeur);
             Trace.WriteLine("Sorte changer à Coeur.");
-            DessinerObjetsChoixSorte(false);
+            Dessiner();
         }
 
         private void btnChoixCarreau_Click(object sender, RoutedEventArgs e)
         {
-            _leJeu.ChangerSorte(Carte.Sorte.Carreau);
+            ObtenirChoixSorteJoueur(Carte.Sorte.Carreau);
             Trace.WriteLine("Sorte changer à Carreau.");
-            DessinerObjetsChoixSorte(false);
+            Dessiner();
         }
     }
 }
