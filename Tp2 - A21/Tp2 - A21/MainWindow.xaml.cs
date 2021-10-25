@@ -340,6 +340,7 @@ namespace Tp2___A21
             btnJouer.Foreground = Brushes.White;
         }
 
+        // TODO: GotFocus & LostFocus border for Jouer
         #endregion
 
         private void btnConnexion_Click(object pSender, RoutedEventArgs pE)

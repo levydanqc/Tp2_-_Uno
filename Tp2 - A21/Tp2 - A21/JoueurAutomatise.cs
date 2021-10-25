@@ -27,6 +27,7 @@ namespace Tp2___A21
                 Main.Remove(carte);
                 return carte;
             }
+            Main.Remove(hasEight);
             return hasEight;
         }
 

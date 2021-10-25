@@ -133,7 +133,7 @@ namespace Tp2___A21
             while (LesJoueurs.Peek() is JoueurAutomatise joueurAutomatise)
             {
                 Carte? carte = joueurAutomatise.JouerUnTour(CartePouvoir8 ?? ObtenirSommetDefausse());
-
+                CartePouvoir8 = null;
                 Trace.WriteLine($"Carte joué: {carte?.Valeur} de { carte?.SorteCarte} par {joueurAutomatise.Nom}");
 
                 if (carte is null)
@@ -173,6 +173,8 @@ namespace Tp2___A21
         /// <param name="pCarte">La carte à jouer.</param>
         public string JouerCarteHumain(Carte pCarte)
         {
+            Trace.WriteLine($"Carte joué: {pCarte.Valeur} de { pCarte.SorteCarte} par Joueur");
+
             _defausse.Push(pCarte);
             LesJoueurs.Peek().Main.Remove(pCarte);
             // Verifier si gagne
@@ -183,8 +185,6 @@ namespace Tp2___A21
 
             pCarte.ObtenirPouvoir(ref _lesJoueurs, ref _cartePouvoir8, joueur, ref _lePaquetCartes);
 
-
-            Trace.WriteLine($"Carte joué: {pCarte.Valeur} de { pCarte.SorteCarte} par Joueur");
             return "";
         }
 
