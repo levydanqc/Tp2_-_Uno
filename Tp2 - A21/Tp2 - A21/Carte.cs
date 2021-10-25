@@ -28,7 +28,12 @@ namespace Tp2___A21
         public int Valeur
         {
             get { return _valeur; }
-            set { _valeur = value; }
+            set
+            {
+                _valeur = value;
+                _jouerAnytime = _valeur == 8 ? true : false;
+
+            }
         }
 
         public Sorte SorteCarte
@@ -105,16 +110,24 @@ namespace Tp2___A21
 
         #endregion
 
-        public void ObtenirPouvoir(ref Queue<Joueur> pLesJoueurs, Stack<Carte> pCartes)
+        public void ObtenirPouvoir(ref Queue<Joueur> pLesJoueurs, ref Carte pCarteHuit, Joueur pJoueur, ref Stack<Carte> pCartes)
         {
             switch (Valeur)
             {
                 case 2:
                     Trace.WriteLine("Pouvoir 2");
-                    for (int i = 0; i <= (SorteCarte == Sorte.Pique ? 3 : 1); i++)
+                    if (pCartes.Count != 0)
                     {
-                        pLesJoueurs.Peek().Main.AddLast(pCartes.Pop());
+                        for (int i = 0; i <= (SorteCarte == Sorte.Pique ? 3 : 1); i++)
+                        {
+                            pLesJoueurs.Peek().Main.AddLast(pCartes.Pop());
+                        }
                     }
+                    break;
+                case 8:
+                    Trace.WriteLine("Pouvoir 8");
+                    pCarteHuit = new Carte(8, pJoueur.ObtenirSortePouvoir8());
+                    Trace.WriteLine($"Sorte choisie: {pCarteHuit.SorteCarte}");
                     break;
                 case 10:
                     Trace.WriteLine("Pouvoir 10");
@@ -128,6 +141,7 @@ namespace Tp2___A21
                     {
                         pLesJoueurs.Enqueue(stackTempo.Pop());
                     }
+                    pLesJoueurs.Enqueue(pLesJoueurs.Dequeue());
                     break;
                 case 11:
                     Trace.WriteLine("Pouvoir 11");

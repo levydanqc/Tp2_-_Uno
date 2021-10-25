@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 
 namespace Tp2___A21
 {
@@ -51,5 +53,19 @@ namespace Tp2___A21
         {
 
         }
+
+        public virtual Carte.Sorte ObtenirSortePouvoir8()
+        {
+            FormChoixCouleur choixCouleur;
+            do
+            {
+                choixCouleur = new FormChoixCouleur();
+                choixCouleur.ShowDialog();
+            } while (choixCouleur.Couleur is null);
+
+            return (Carte.Sorte)choixCouleur.Couleur;
+
+        }
+
     }
 }

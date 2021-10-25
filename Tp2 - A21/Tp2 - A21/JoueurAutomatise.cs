@@ -14,8 +14,8 @@ namespace Tp2___A21
         /// Cette méthode permet aux joueurs automatisé de jouer un tour
         /// </summary>
         /// <returns>
-        /// La carte -1 de carreau si le bot pige une carte.<br/>
-        /// La carte que le joueur veut jouer.
+        /// La carte que le joueur veut jouer.<br/>
+        /// Null si le joueur pioche.
         /// </returns>
         public Carte JouerUnTour(Carte pSommet)
         {
@@ -27,39 +27,26 @@ namespace Tp2___A21
                 Main.Remove(carte);
                 return carte;
             }
-            return hasEight ??= new Carte(-1, Carte.Sorte.Carreau);
+            return hasEight;
         }
 
-        public Carte.Sorte ObtenirSortePouvoir8()
+        #region Overrides of Joueur
+
+        public override Carte.Sorte ObtenirSortePouvoir8()
         {
-            Carte sorteCarreau = new Carte(0, Carte.Sorte.Carreau);
-            Carte sorteCoeur = new Carte(0, Carte.Sorte.Coeur);
-            Carte sorteTrefle = new Carte(0, Carte.Sorte.Trèfle);
-            Carte sortePique = new Carte(0, Carte.Sorte.Pique);
+            int[] nbCouleurs = new int[4];
+
             foreach (Carte carte in Main)
             {
-                if (carte.SorteCarte == Carte.Sorte.Carreau) sorteCarreau.Valeur++;
-                if (carte.SorteCarte == Carte.Sorte.Coeur) sorteCoeur.Valeur++;
-                if (carte.SorteCarte == Carte.Sorte.Trèfle) sorteTrefle.Valeur++; 
-                if (carte.SorteCarte == Carte.Sorte.Pique) sortePique.Valeur++;
+                nbCouleurs[(int)carte.SorteCarte]++;
             }
-            if (sorteCarreau.Valeur >= sorteCoeur.Valeur && sorteCarreau.Valeur >= sorteTrefle.Valeur && sorteCarreau.Valeur >= sortePique.Valeur)
-            {
-                Trace.WriteLine("Pouvoir 8 : Carreau");
-                return Carte.Sorte.Carreau;
-            }
-            if (sorteCoeur.Valeur >= sorteTrefle.Valeur && sorteCoeur.Valeur >= sortePique.Valeur)
-            {
-                Trace.WriteLine("Pouvoir 8 : Coeur");
-                return Carte.Sorte.Coeur;
-            }
-            if (sorteTrefle.Valeur >= sortePique.Valeur)
-            {
-                Trace.WriteLine("Pouvoir 8 : Trèfle");
-                return Carte.Sorte.Trèfle;
-            }
-            Trace.WriteLine("Pouvoir 8 : Pique");
-            return Carte.Sorte.Pique;
+
+            int max = nbCouleurs.Max();
+            int i = nbCouleurs.ToList().IndexOf(max);
+
+            return (Carte.Sorte)i;
         }
+
+        #endregion
     }
 }

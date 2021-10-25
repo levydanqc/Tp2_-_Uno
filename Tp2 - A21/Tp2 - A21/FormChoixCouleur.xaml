@@ -1,0 +1,15 @@
+﻿<Window x:Class="Tp2___A21.FormChoixCouleur"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tp2___A21"
+        mc:Ignorable="d"
+        Title="FormChoixCouleur" Height="450" Width="800" Closing="Window_Closing">
+    <Grid>
+        <Button Tag="choixJoueur" x:Name="btnChoixPique" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="446,180,216,179" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixPique_Click" Grid.Column="2">Pique</Button>
+        <Button Tag="choixJoueur" x:Name="btnChoixTrefle" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="319,180,343,179" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixTrefle_Click" Grid.Column="2">Trèfle</Button>
+        <Button Tag="choixJoueur" x:Name="btnChoixCoeur" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="78,180,584,179" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixCoeur_Click" Grid.Column="2">Coeur</Button>
+        <Button Tag="choixJoueur" x:Name="btnChoixCarreau" Cursor="Hand" Background="Gray" BorderBrush="White" Margin="203,180,459,179" Width="75" Height="75" FontFamily="Malgun Gothic" FontSize="18" FontWeight="Bold" FontStyle="Normal" FontStretch="Normal" Click="btnChoixCarreau_Click" Grid.Column="2">Carreau</Button>
+    </Grid>
+</Window>

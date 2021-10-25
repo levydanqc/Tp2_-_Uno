@@ -54,7 +54,6 @@ namespace Tp2___A21
             ChargerUtilisateurs();
             ChargerSalts();
             DessinerObjetsNecessitentConnexion(EstConnecte);
-            DessinerObjetsChoixSorte(false);
         }
 
         private void ChargerUtilisateurs()
@@ -97,24 +96,10 @@ namespace Tp2___A21
         {
             DessinerPaquetEtDefausse();
             DessinerJoueurs();
-            DessinerObjetsChoixSorte(_leJeu.CartePouvoir8.Valeur == 8);
-            for (int i = 0; i < NbJoueurs; i++)
+            lblJoueur.Visibility = Visibility.Visible;
+            for (int i = 0; i < NbJoueurs - 1; i++)
             {
-                switch (i)
-                {
-                    case 1:
-                        lblBot1.Visibility = Visibility.Visible;
-                        break;
-                    case 2:
-                        lblBot2.Visibility = Visibility.Visible;
-                        break;
-                    case 3:
-                        lblBot3.Visibility = Visibility.Visible;
-                        break;
-                    default:
-                        lblJoueur.Visibility = Visibility.Visible;
-                        break;
-                }
+                ((Label)maGrid.FindName("lblBot" + (i + 1).ToString())).Visibility = Visibility.Visible;
             }
         }
 
@@ -137,24 +122,6 @@ namespace Tp2___A21
                 lblBot1.Visibility = Visibility.Hidden;
                 lblBot2.Visibility = Visibility.Hidden;
                 lblBot3.Visibility = Visibility.Hidden;
-            }
-        }
-
-        private void DessinerObjetsChoixSorte(bool pChoisirSorte)
-        {
-            if (pChoisirSorte)
-            {
-                btnChoixPique.Visibility = Visibility.Visible;
-                btnChoixTrefle.Visibility = Visibility.Visible;
-                btnChoixCarreau.Visibility = Visibility.Visible;
-                btnChoixCoeur.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                btnChoixPique.Visibility = Visibility.Hidden;
-                btnChoixTrefle.Visibility = Visibility.Hidden;
-                btnChoixCarreau.Visibility = Visibility.Hidden;
-                btnChoixCoeur.Visibility = Visibility.Hidden;
             }
         }
 
@@ -212,13 +179,13 @@ namespace Tp2___A21
                 ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Clear();
                 for (int j = 0; j < monJoueurActuel.Main.Count; j++)
                 {
-                    List<Carte> lstTempo = new List<Carte>();
-                    lstTempo = monJoueurActuel.Main.ToList();
+                    monJoueurActuel.Main = _leJeu.OrdonnerCartes(monJoueurActuel.Main);
+                    List<Carte> lstTempo = monJoueurActuel.Main.ToList();
                     Carte carteActuelle = lstTempo[j];
                     Image monImage = new Image
                     {
-                        Source = 
-                            BitmapFrame.Create(new Uri("Cartes/" + carteActuelle.ObtenirNomFichier(), 
+                        Source =
+                            BitmapFrame.Create(new Uri("Cartes/" + carteActuelle.ObtenirNomFichier(),
                                 UriKind.Relative)),
                         Width = 72,
                         Height = 96
@@ -230,7 +197,7 @@ namespace Tp2___A21
                     Canvas.SetLeft(monImage, decalageCarte);
                     ((Canvas)maGrid.FindName("cnvJoueur" + (i + 1).ToString())).Children.Add(monImage);
                     decalageCarte += 14;
-                    
+
 
                     //CacherMain(monJoueurActuel, monImage);
                 }
@@ -240,7 +207,7 @@ namespace Tp2___A21
 
             }
         }
-        /*
+
         private void CacherMain(Joueur pJoueur, Image pImage)
         {
             if (pJoueur is JoueurAutomatise)
@@ -248,13 +215,13 @@ namespace Tp2___A21
                 pImage.Source = BitmapFrame.Create(new Uri("Cartes/b1fv.png", UriKind.Relative));
             }
         }
-        */
+
 
         private void cnvJoueur1_MouseUp(object pSender, MouseButtonEventArgs pE)
         {
             Point leClick = pE.GetPosition(cnvJoueur1);
             _carteSelectionnee = leClick.X < (82 + 14 * _leJeu.LesJoueurs.Peek().Main.Count()) && leClick.Y > 8
-                ? Math.Min(((int) leClick.X) / 14, _leJeu.LesJoueurs.Peek().Main.Count - 1)
+                ? Math.Min(((int)leClick.X) / 14, _leJeu.LesJoueurs.Peek().Main.Count - 1)
                 : -1;
             Dessiner();
         }
@@ -263,33 +230,27 @@ namespace Tp2___A21
         {
             string gagnant = _leJeu.FaireUnTour();
 
-            foreach (Joueur joueur in _leJeu.LesJoueurs)
-            {
-                if (joueur is not JoueurAutomatise)
-                {
-                    if (joueur.Main.Count == 0)
-                    {
-                        gagnant = joueur.Nom;
-                    }
-                }
-            }
-
             Dessiner();
 
             if (gagnant.Length != 0)
             {
-                for (int i = 0; i < _leJeu.NbJoueurs; i++)
-                {
-                    ((Canvas)maGrid.FindName(name: $"cnvJoueur{i + 1}"))?.Children.Clear();
-                }
-                ((Canvas)maGrid.FindName(name: "cnvDefausse"))?.Children.Clear();
-                ((Canvas)maGrid.FindName(name: "cnvPaquet"))?.Children.Clear();
-
-                MessageBox.Show("Le joueur: " + gagnant + " a gagné la partie.", "Victoire.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-
-                _leJeu = null;
+                FinPartie(gagnant);
             }
 
+        }
+
+        private void FinPartie(string pGagnant)
+        {
+            for (int i = 0; i < _leJeu.NbJoueurs; i++)
+            {
+                ((Canvas)maGrid.FindName(name: $"cnvJoueur{i + 1}"))?.Children.Clear();
+            }
+            ((Canvas)maGrid.FindName(name: "cnvDefausse"))?.Children.Clear();
+            ((Canvas)maGrid.FindName(name: "cnvPaquet"))?.Children.Clear();
+
+            MessageBox.Show("Le joueur: " + pGagnant + " a gagné la partie.", "Victoire.", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+
+            _leJeu = null;
         }
 
 
@@ -303,19 +264,11 @@ namespace Tp2___A21
         {
             if (_carteSelectionnee > -1)
             {
-                List<Carte> lstTempo = new List<Carte>();
-                lstTempo = _leJeu.LesJoueurs.Peek().Main.ToList();
+                List<Carte> lstTempo = _leJeu.LesJoueurs.Peek().Main.ToList();
                 Carte carte = lstTempo[_carteSelectionnee];
 
-                Carte carteAJouer;
-                if (_leJeu.CartePouvoir8.Valeur != 8)
-                {
-                    carteAJouer = _leJeu.ObtenirSommetDefausse();
-                }
-                else
-                {
-                    carteAJouer = _leJeu.CartePouvoir8;
-                }
+                Carte carteAJouer = _leJeu.CartePouvoir8?.Valeur == 8 ? _leJeu.CartePouvoir8 : _leJeu.ObtenirSommetDefausse();
+
 
                 if (!carte.JouerAnytime && carteAJouer.Valeur != carte.Valeur &&
                     carteAJouer.SorteCarte != carte.SorteCarte)
@@ -325,10 +278,16 @@ namespace Tp2___A21
                 }
                 else
                 {
-                    string finPartie = _leJeu.JouerCarteHumain(carte);
-                    _carteSelectionnee = -1;
-                    DessinerObjetsChoixSorte(true);
-                    FaireUnTour();
+                    string gagnant = _leJeu.JouerCarteHumain(carte);
+                    if (gagnant.Length != 0)
+                    {
+                        FinPartie(gagnant);
+                    }
+                    else
+                    {
+                        _carteSelectionnee = -1;
+                        FaireUnTour();
+                    }
                 }
             }
         }
@@ -428,7 +387,7 @@ namespace Tp2___A21
                     lblJoueur.Content = txtIdentifiant.Text;
                 }
             }
-            
+
         }
 
         private void Effacer()
@@ -466,39 +425,6 @@ namespace Tp2___A21
                 MessageBox.Show("Création d'un compte est un succès.");
                 btnConnexion_Click(pSender, pE);
             }
-        }
-
-        public void ObtenirChoixSorteJoueur(Carte.Sorte pSorte)
-        {
-            _leJeu.CartePouvoir8 = new Carte(8, pSorte);
-        }
-
-        private void btnChoixPique_Click(object sender, RoutedEventArgs e)
-        {
-            ObtenirChoixSorteJoueur(Carte.Sorte.Pique);
-            Trace.WriteLine("Sorte changer à Pique.");
-            Dessiner();
-        }
-
-        private void btnChoixTrefle_Click(object sender, RoutedEventArgs e)
-        {
-            ObtenirChoixSorteJoueur(Carte.Sorte.Trèfle);
-            Trace.WriteLine("Sorte changer à Trèfle.");
-            Dessiner();
-        }
-
-        private void btnChoixCoeur_Click(object sender, RoutedEventArgs e)
-        {
-            ObtenirChoixSorteJoueur(Carte.Sorte.Coeur);
-            Trace.WriteLine("Sorte changer à Coeur.");
-            Dessiner();
-        }
-
-        private void btnChoixCarreau_Click(object sender, RoutedEventArgs e)
-        {
-            ObtenirChoixSorteJoueur(Carte.Sorte.Carreau);
-            Trace.WriteLine("Sorte changer à Carreau.");
-            Dessiner();
         }
     }
 }

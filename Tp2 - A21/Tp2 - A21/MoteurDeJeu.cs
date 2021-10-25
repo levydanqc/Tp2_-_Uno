@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 
 namespace Tp2___A21
 {
@@ -13,7 +13,7 @@ namespace Tp2___A21
         private Stack<Carte> _defausse;
         private Queue<Joueur> _lesJoueurs;
 
-        private Carte _cartePouvoir8 = new Carte(0, Carte.Sorte.Carreau);
+        private Carte? _cartePouvoir8 = null;
 
         private int _nbJoueurs;
 
@@ -29,7 +29,7 @@ namespace Tp2___A21
             set { _nbJoueurs = value; }
         }
 
-        public Carte CartePouvoir8
+        public Carte? CartePouvoir8
         {
             get { return _cartePouvoir8; }
             set { _cartePouvoir8 = value; }
@@ -50,7 +50,7 @@ namespace Tp2___A21
                 "Hal"
             };
             LesJoueurs.Enqueue(new Joueur(pNom));
-            for (int i = 0; i < NbJoueurs-1; i++)
+            for (int i = 0; i < NbJoueurs - 1; i++)
             {
                 LesJoueurs.Enqueue(new JoueurAutomatise(nomBots[i]));
             }
@@ -104,21 +104,10 @@ namespace Tp2___A21
             }
 
             _defausse.Push(_lePaquetCartes.Pop());
-
-            foreach (Joueur joueur in LesJoueurs)
-            {
-                joueur.Main = OrdonnerCartes(joueur.Main);
-            }
         }
 
         public LinkedList<Carte> OrdonnerCartes(LinkedList<Carte> pCartes)
         {
-            //return pCartes
-            //    .GroupBy(pCarte => pCarte.SorteCarte)
-            //    .OrderBy(pCarte => pCarte.Key)
-            //    .SelectMany(pGroup => pGroup
-            //        .OrderBy(pCarte => pCarte.Valeur))
-            //    .ToList();
             LinkedList<Carte> lstTempo = new LinkedList<Carte>();
             List<Carte> lstCartes = new List<Carte>();
             lstCartes = pCartes.ToList();
@@ -130,8 +119,6 @@ namespace Tp2___A21
             }
 
             return lstTempo;
-            //return p.GroupBy(psad000000dssCarte => pCarte.SorteCarte).OrderBy(pCarte => pCarte.Key)
-            //    .SelectMany(pGroup => pGroup.OrderBy(pCarte => pCarte.Valeur)).ToList;
         }
 
         /// <summary>
@@ -145,19 +132,11 @@ namespace Tp2___A21
         {
             while (LesJoueurs.Peek() is JoueurAutomatise joueurAutomatise)
             {
-                Carte carte;
-                if (CartePouvoir8.Valeur == 8)
-                {
-                    carte = joueurAutomatise.JouerUnTour(CartePouvoir8);
-                    CartePouvoir8.Valeur = 0;
-                }
-                else
-                {
-                    carte = joueurAutomatise.JouerUnTour(ObtenirSommetDefausse());
-                }
+                Carte? carte = joueurAutomatise.JouerUnTour(CartePouvoir8 ?? ObtenirSommetDefausse());
 
-                Trace.WriteLine($"Carte joué: {carte.Valeur} de { carte.SorteCarte} par {joueurAutomatise.Nom}");
-                if (carte is {Valeur: -1, SorteCarte: Carte.Sorte.Carreau})
+                Trace.WriteLine($"Carte joué: {carte?.Valeur} de { carte?.SorteCarte} par {joueurAutomatise.Nom}");
+
+                if (carte is null)
                 {
                     PigerCarte(joueurAutomatise);
                 }
@@ -166,16 +145,10 @@ namespace Tp2___A21
                     if (joueurAutomatise.Main.Count == 0) return joueurAutomatise.Nom;
                     LesJoueurs.Enqueue(LesJoueurs.Dequeue());
                     _defausse.Push(carte);
-                    carte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
-
-                    if (carte.Valeur == 8)
-                    {
-                        CartePouvoir8.SorteCarte = joueurAutomatise.ObtenirSortePouvoir8();
-                        CartePouvoir8.Valeur = 8;
-                    }
+                    carte.ObtenirPouvoir(ref _lesJoueurs, ref _cartePouvoir8, (Joueur)joueurAutomatise, ref _lePaquetCartes);
                 }
             }
-            Trace.WriteLine("Tour terminé.");
+            Trace.WriteLine("Tour terminé.\n");
             return "";
         }
 
@@ -200,17 +173,17 @@ namespace Tp2___A21
         /// <param name="pCarte">La carte à jouer.</param>
         public string JouerCarteHumain(Carte pCarte)
         {
-            if (LesJoueurs.Peek().Main.Contains(pCarte))
-            {
-                _defausse.Push(pCarte);
-                LesJoueurs.Peek().Main.Remove(pCarte);
-                // Verifier si gagne
-                if (LesJoueurs.Peek().Main.Count == 0) return LesJoueurs.Peek().Nom;
+            _defausse.Push(pCarte);
+            LesJoueurs.Peek().Main.Remove(pCarte);
+            // Verifier si gagne
+            if (LesJoueurs.Peek().Main.Count == 0) return LesJoueurs.Peek().Nom;
 
-                LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+            Joueur joueur = LesJoueurs.Dequeue();
+            LesJoueurs.Enqueue(joueur);
 
-                pCarte.ObtenirPouvoir(ref _lesJoueurs, _lePaquetCartes);
-            }
+            pCarte.ObtenirPouvoir(ref _lesJoueurs, ref _cartePouvoir8, joueur, ref _lePaquetCartes);
+
+
             Trace.WriteLine($"Carte joué: {pCarte.Valeur} de { pCarte.SorteCarte} par Joueur");
             return "";
         }
@@ -220,11 +193,18 @@ namespace Tp2___A21
         /// </summary>
         public void PigerCarte(Joueur pJoueur)
         {
-            pJoueur.Main.AddLast(_lePaquetCartes.Pop());
-            pJoueur.Main = OrdonnerCartes(pJoueur.Main);
-            GestionPaquetVide();
+            if (_lePaquetCartes.Count != 0)
+            {
+                pJoueur.Main.AddLast(_lePaquetCartes.Pop());
+                GestionPaquetVide();
 
-            LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+                LesJoueurs.Enqueue(LesJoueurs.Dequeue());
+            }
+            else
+            {
+                // TODO: Change to error label
+                MessageBox.Show("Il n'y a plus de cartes dans la pioche", "Plus de carte", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         /// <summary>
