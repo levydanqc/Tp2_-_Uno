@@ -54,6 +54,7 @@ namespace Tp2___A21
             ChargerUtilisateurs();
             ChargerSalts();
             DessinerObjetsNecessitentConnexion(EstConnecte);
+            txtIdentifiant.Focus();
         }
 
         private void ChargerUtilisateurs()
@@ -100,6 +101,11 @@ namespace Tp2___A21
             for (int i = 0; i < NbJoueurs - 1; i++)
             {
                 ((Label)maGrid.FindName("lblBot" + (i + 1).ToString())).Visibility = Visibility.Visible;
+            }
+
+            if (_leJeu.CartePouvoir8 is not null)
+            {
+                // TODO: Dessiner un label de la couleur choisir
             }
         }
 

@@ -23,7 +23,7 @@ namespace Tp2___A21
             foreach (Carte carte in Utilitaires.Aleatoire.Next(100) > 50 ? Main : Main.Reverse())
             {
                 if (carte.Valeur == 8) hasEight = carte;
-                if (pSommet.Valeur != carte.Valeur && pSommet.SorteCarte != carte.SorteCarte) continue;
+                if (carte.Valeur == 8 && pSommet.Valeur != carte.Valeur && pSommet.SorteCarte != carte.SorteCarte) continue;
                 Main.Remove(carte);
                 return carte;
             }
